@@ -1,5 +1,6 @@
 import { Flex } from "@radix-ui/themes";
 import React, { useState } from "react";
+import useLocalStorage from "~/app/utils/useLocalStorage";
 
 type Item = {
   id: string;
@@ -10,6 +11,7 @@ type Item = {
 type LootBoxType = "crate" | "starrdrop" | "skin" | "summon";
 
 type LootBox = {
+  backgroundImage: string | undefined;
   id: string;
   name: string;
   game: string;
@@ -32,7 +34,7 @@ export default function LootBoxInventory({
   setLootBoxInventory: (boxes: LootBox[]) => void;
   addLootBoxToInventory: (lootBox: LootBox) => void;
 }) {
-  const [columns, setColumns] = useState(4); // Default 2 columns
+  const [columns, setColumns] = useLocalStorage("columns", 4); // Default 4 columns
 
   const handleOpenLootBox = (lootBox: LootBox) => {
     confirmOpenLootBox(lootBox);
@@ -96,14 +98,14 @@ export default function LootBoxInventory({
 
         {/* Display Lootboxes */}
         {lootBoxInventory.map((box, index) => (
-          <div
+          <Flex
             key={box.id}
-            className={`relative rounded-lg p-4 shadow-lg ${box.background}`}
+            className={`relative flex-col rounded-lg p-3 shadow-lg ${box.background}`}
           >
             <Flex
               justify="center"
               align="center"
-              className="relative overflow-hidden rounded-lg bg-black/20 p-3"
+              className="relative overflow-hidden rounded-md bg-black/20 p-3"
             >
               <img
                 src={box.backgroundImage}
@@ -117,36 +119,45 @@ export default function LootBoxInventory({
               />
             </Flex>
             <h3 className="mt-2 text-lg font-bold">{box.name}</h3>
-            <p className="text-sm">Type: {box.type}</p>
+            <p className="mb-3 text-sm italic">{box.game}</p>
 
             {/* Open and Delete buttons */}
-            <Flex className="gap-4">
+            <Flex className="mt-auto gap-2">
               <button
                 onClick={() => handleOpenLootBox(box)}
-                className="w-full rounded bg-blue-500 px-4 py-2 text-white"
+                className="w-full rounded-md bg-blue-600 px-4 py-2 text-white transition-all hover:bg-blue-700"
               >
                 Open
               </button>
               <button
                 onClick={() => handleDeleteLootBox(box.id)}
-                className="w-full rounded bg-red-500 px-4 py-2 text-white"
+                className="w-full rounded-md bg-red-600 px-4 py-2 text-white hover:bg-red-500"
               >
                 Delete
               </button>
             </Flex>
-          </div>
+          </Flex>
         ))}
 
         {/* Fill empty columns with dark squares */}
-        {lootBoxInventory.length < 64 &&
-          Array.from({ length: 64 - lootBoxInventory.length - 1 }).map(
-            (_, index) => (
+        {lootBoxInventory.length < 64
+          ? Array.from({ length: 64 - lootBoxInventory.length - 1 }).map(
+              (_, index) => (
+                <div
+                  key={`placeholder-${index}`}
+                  className="h-64 rounded-lg bg-gray-700 shadow-lg"
+                ></div>
+              ),
+            )
+          : //instead just fill up last row
+            Array.from({
+              length: columns - (lootBoxInventory.length % columns) - 1,
+            }).map((_, index) => (
               <div
                 key={`placeholder-${index}`}
                 className="h-64 rounded-lg bg-gray-700 shadow-lg"
               ></div>
-            ),
-          )}
+            ))}
       </div>
     </div>
   );

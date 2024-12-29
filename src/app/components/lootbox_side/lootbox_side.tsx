@@ -80,7 +80,7 @@ export default function LootBoxSide({
           {collectedItems.map((item, index) => (
             <div
               key={index}
-              className={`rounded-lg p-2 text-center text-sm shadow-md ${rarityColors[item.rarity]}`}
+              className={`h-24 rounded-lg p-2 text-center text-sm shadow-md ${rarityColors[item.rarity]}`}
             >
               <img
                 src={item?.image}
@@ -92,15 +92,23 @@ export default function LootBoxSide({
             </div>
           ))}
 
-          {collectedItems.length < 60 &&
-            Array.from({ length: 60 - collectedItems.length }).map(
-              (_, index) => (
+          {collectedItems.length < 60
+            ? Array.from({ length: 60 - collectedItems.length }).map(
+                (_, index) => (
+                  <div
+                    key={`placeholder-${index}`}
+                    className="h-24 rounded-lg bg-gray-700 shadow-lg"
+                  ></div>
+                ),
+              ) //instead just fill up last row
+            : Array.from({
+                length: 6 - (collectedItems.length % 6),
+              }).map((_, index) => (
                 <div
                   key={`placeholder-${index}`}
-                  className="h-32 rounded-lg bg-gray-700 shadow-lg"
+                  className="h-24 rounded-lg bg-gray-700 shadow-lg"
                 ></div>
-              ),
-            )}
+              ))}
         </div>
       </div>
     </div>

@@ -30,7 +30,7 @@ export default function LootBoxMenu({
   addLootBoxToInventory: (box: LootBox) => void;
 }) {
   return (
-    <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+    <div className="grid grid-cols-2 gap-4 p-4 md:grid-cols-3">
       {availableLootBoxes.map((box) => (
         <Flex
           key={box.id}
@@ -52,14 +52,14 @@ export default function LootBoxMenu({
           {/* <p className="text-sm">Potential Drops:</p> */}
           <ul className="mt-2 h-20 overflow-y-auto rounded-lg bg-black/10 p-2 text-sm shadow-inner">
             {box.drops.map((drop, index) => (
-              <li key={index}>
+              <li key={index} className="capitalize">
                 <Text className="font-semibold">{drop.name}</Text> (
                 {drop.rarity} rarity): {drop.chance.toFixed(1)}%
               </li>
             ))}
           </ul>
           <button
-            className="mt-3 w-full rounded bg-black/30 px-4 py-2 text-white"
+            className="mt-3 w-full rounded bg-black/30 px-4 py-2 text-white transition-all hover:bg-black/50"
             onClick={() => addLootBoxToInventory(box)}
           >
             Add to Inventory

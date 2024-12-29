@@ -8,6 +8,8 @@ import { StarIcon } from "lucide-react";
 import LootBoxSide from "~/app/components/lootbox_side/lootbox_side";
 import { transformers } from "~/app/utils/drops";
 
+import useLocalStorage from "~/app/utils/useLocalStorage";
+
 type Rarity =
   | "common"
   | "rare"
@@ -47,12 +49,19 @@ const rarityColors: Record<Rarity, string> = {
 
 const App = () => {
   const [selectedLootBox, setSelectedLootBox] = useState<LootBox | null>(null);
-  const [lootBoxInventory, setLootBoxInventory] = useState<LootBox[]>([]);
+  const [lootBoxInventory, setLootBoxInventory] = useLocalStorage(
+    "lootboxInventory",
+    [],
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOpening, setIsOpening] = useState(false);
   const [openedItems, setOpenedItems] = useState<Item[]>([]);
-  const [collectedItems, setCollectedItems] = useState<Item[]>([]);
+  const [collectedItems, setCollectedItems] = useLocalStorage(
+    "collectedItems",
+    [],
+  );
   const [starrDropStage, setStarrDropStage] = useState<number>(0);
+  const [shakeEffect, setShakeEffect] = useState(true);
 
   const availableLootBoxes: LootBox[] = [
     {
@@ -218,7 +227,9 @@ const App = () => {
   };
 
   const finalizeOpening = (box: LootBox) => {
-    setLootBoxInventory(lootBoxInventory.filter((b) => b.id !== box.id));
+    setLootBoxInventory(
+      lootBoxInventory.filter((b: { id: string }) => b.id !== box.id),
+    );
     // setSelectedLootBox(null);
     setIsOpening(false);
   };
@@ -276,23 +287,50 @@ const App = () => {
             <img
               src={selectedLootBox.image}
               alt={selectedLootBox.name}
-              className={`z-10 h-72 w-72 ${isOpening ? "animate-spin" : ""}`}
+              className={`z-10 h-72 w-72 transition duration-200 ease-in-out ${isOpening ? "animate-wiggle" : ""}`}
             />
             {openedItems.length > 0 && (
-              <Flex className="absolute z-20 mt-4 grid grid-cols-3 gap-4">
+              <Flex className="absolute z-20 mx-4 mt-4 grid grid-cols-3 gap-4">
                 {openedItems.map((item, index) => (
-                  <Box
+                  <Flex
                     key={index}
-                    className={`flex flex-col items-center rounded-lg p-4 ${rarityColors[item.rarity]} bg-opacity-90 shadow-lg`}
+                    className={`animate-wiggle flex-col items-center rounded-lg p-3 ${rarityColors[item.rarity]} border border-white/30 bg-opacity-90 shadow-lg`}
                   >
                     <img
                       src={item.image}
                       alt={item.name}
-                      className="mx-auto mb-2 h-16 w-16"
+                      className="mx-auto mb-2 h-16 w-16 rounded-md bg-black/30 object-cover"
                     />
-                    <Text className="text-center">{item.name}</Text>
-                    <Text className="capitalize italic"> {item.rarity}</Text>
-                  </Box>
+                    <Text className="mx-auto text-center font-semibold">
+                      {item.name}
+                    </Text>
+                    <Flex
+                      justify="center"
+                      align="center"
+                      className={`z-20 mt-2 space-x-0.5 rounded-full bg-black/40 p-1`}
+                    >
+                      {[...Array(5)].map((_, i) => (
+                        <StarIcon
+                          key={i}
+                          className={`size-4 rounded-full ${
+                            i <
+                            (item.rarity === "legendary"
+                              ? 5
+                              : item.rarity === "epic"
+                                ? 4
+                                : item.rarity === "super rare"
+                                  ? 3
+                                  : item.rarity === "rare"
+                                    ? 2
+                                    : 1)
+                              ? "text-yellow-500"
+                              : "text-gray-500"
+                          }`}
+                        />
+                      ))}
+                    </Flex>
+                    {/* <Text className="capitalize italic"> {item.rarity}</Text> */}
+                  </Flex>
                 ))}
               </Flex>
             )}
@@ -326,7 +364,7 @@ const App = () => {
                   {openedItems.map((item, index) => (
                     <div
                       key={index}
-                      className={`rounded-3xl border border-white/50 bg-opacity-80 p-4 ${
+                      className={`animate-wiggle rounded-3xl border border-white/50 bg-opacity-80 p-4 ${
                         item.rarity ? rarityColors[item.rarity] : ""
                       }`}
                     >
@@ -377,25 +415,60 @@ const App = () => {
             className={`h-full flex-col starrdrop-stage-${starrDropStage}`}
             onClick={handleStarrDropClick}
           >
+            <img
+              src={selectedLootBox.backgroundImage}
+              alt={selectedLootBox.name}
+              className="z-5 absolute h-full w-full object-cover opacity-50"
+            />
             {openedItems.length > 0 ? (
-              <div className="mt-4 flex flex-col items-center">
-                {openedItems.map((item, index) => (
-                  <div key={index} className="rounded-lg p-4 shadow-lg">
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="mx-auto mb-2 h-16 w-16"
+              <Flex
+                className={`z-10 flex-col items-center rounded-lg p-3 ${rarityColors[openedItems[0]?.rarity]} border border-white/30 bg-opacity-90 shadow-lg`}
+              >
+                <img
+                  src={openedItems[0]?.image}
+                  alt={openedItems[0]?.name}
+                  className="mx-auto mb-2 h-16 w-16 rounded-md bg-black/30 object-cover"
+                />
+                <Text className="mx-auto text-center font-semibold">
+                  {openedItems[0]?.name}
+                </Text>
+                <Flex
+                  justify="center"
+                  align="center"
+                  className={`z-20 mt-2 space-x-0.5 rounded-full bg-black/40 p-1`}
+                >
+                  {[...Array(5)].map((_, i) => (
+                    <StarIcon
+                      key={i}
+                      className={`size-4 rounded-full ${
+                        i <
+                        (openedItems[0]?.rarity === "legendary"
+                          ? 5
+                          : openedItems[0]?.rarity === "epic"
+                            ? 4
+                            : openedItems[0]?.rarity === "super rare"
+                              ? 3
+                              : openedItems[0]?.rarity === "rare"
+                                ? 2
+                                : 1)
+                          ? "text-yellow-500"
+                          : "text-gray-500"
+                      }`}
                     />
-                    <p>{item.name}</p>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </Flex>
+                {/* <Text className="capitalize italic"> {item.rarity}</Text> */}
+              </Flex>
             ) : (
-              <Flex justify="center" align="center" className="flex-col">
+              <Flex justify="center" align="center" className="z-10 flex-col">
                 <img
                   src="/images/lootboxes/starr-drop.webp"
                   alt="Star Drop"
-                  className={`h-64 w-auto ${isOpening ? "animate-pulse" : ""} cursor-pointer`}
+                  onClick={() => {
+                    setShakeEffect(true);
+                  }}
+                  onAnimationEnd={() => setShakeEffect(false)}
+                  className={`h-64 w-auto ${shakeEffect ? "animate-wiggle" : ""} cursor-pointer select-none transition duration-200 ease-in-out hover:scale-105`}
                 />
                 <p className="mt-2 text-center text-lg">
                   {[...Array(5)].map((_, i) => (
