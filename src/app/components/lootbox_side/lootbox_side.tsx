@@ -1,23 +1,8 @@
 import React, { useState } from "react";
+import { Flex } from "@radix-ui/themes";
 import LootBoxMenu from "./lootbox_menu";
 import LootBoxInventory from "./lootbox_inventory";
-
-type Rarity =
-  | "common"
-  | "rare"
-  | "super rare"
-  | "epic"
-  | "mythical"
-  | "legendary";
-
-const rarityColors: Record<Rarity, string> = {
-  common: "bg-gray-500",
-  rare: "bg-blue-500",
-  "super rare": "bg-purple-500",
-  epic: "bg-pink-500",
-  mythical: "bg-red-500",
-  legendary: "bg-yellow-500",
-};
+import CollectedItems from "~/app/components/lootbox_side/collected_items";
 
 export default function LootBoxSide({
   availableLootBoxes,
@@ -39,9 +24,8 @@ export default function LootBoxSide({
   const handleToggleView = () => {
     setIsInventoryView(!isInventoryView);
   };
-
   return (
-    <div className="flex h-screen w-full flex-col overflow-y-auto p-4">
+    <Flex className="h-screen w-full flex-col overflow-y-auto p-4">
       <h1 className="mb-4 text-4xl font-bold">Lootbox Simulator</h1>
 
       {/* Toggle Button */}
@@ -56,7 +40,7 @@ export default function LootBoxSide({
         </button>
       </div>
 
-      <div className="h-full w-full overflow-y-auto rounded-xl bg-gray-800">
+      <Flex className="h-full w-full overflow-y-auto rounded-xl bg-gray-800">
         {/* Conditionally render LootBoxMenu or LootBoxInventory */}
         {isInventoryView ? (
           <LootBoxInventory
@@ -72,45 +56,9 @@ export default function LootBoxSide({
             addLootBoxToInventory={addLootBoxToInventory}
           />
         )}
-      </div>
+      </Flex>
       {/* Collected Items */}
-      <div className="mt-4 h-72 w-full overflow-y-auto rounded-xl bg-gray-800 p-4">
-        <h2 className="mb-2 text-center text-xl font-bold">Collected Items</h2>
-        <div className="grid grid-cols-6 gap-2">
-          {collectedItems.map((item, index) => (
-            <div
-              key={index}
-              className={`h-24 rounded-lg p-2 text-center text-sm shadow-md ${rarityColors[item.rarity]}`}
-            >
-              <img
-                src={item?.image}
-                alt={item.name}
-                className="mx-auto h-10 w-10"
-              />
-              <p className="font-bold">{item.name}</p>
-              <p className="capitalize">{item.rarity}</p>
-            </div>
-          ))}
-
-          {collectedItems.length < 60
-            ? Array.from({ length: 60 - collectedItems.length }).map(
-                (_, index) => (
-                  <div
-                    key={`placeholder-${index}`}
-                    className="h-24 rounded-lg bg-gray-700 shadow-lg"
-                  ></div>
-                ),
-              ) //instead just fill up last row
-            : Array.from({
-                length: 6 - (collectedItems.length % 6),
-              }).map((_, index) => (
-                <div
-                  key={`placeholder-${index}`}
-                  className="h-24 rounded-lg bg-gray-700 shadow-lg"
-                ></div>
-              ))}
-        </div>
-      </div>
-    </div>
+      <CollectedItems collectedItems={collectedItems} />
+    </Flex>
   );
 }

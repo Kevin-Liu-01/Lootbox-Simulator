@@ -1,6 +1,7 @@
 import { Flex } from "@radix-ui/themes";
-import React, { useState } from "react";
+import React from "react";
 import useLocalStorage from "~/app/utils/useLocalStorage";
+import InventoryFiller from "~/app/utils/inventory_filler";
 
 type Item = {
   id: string;
@@ -34,7 +35,10 @@ export default function LootBoxInventory({
   setLootBoxInventory: (boxes: LootBox[]) => void;
   addLootBoxToInventory: (lootBox: LootBox) => void;
 }) {
-  const [columns, setColumns] = useLocalStorage("columns", 4); // Default 4 columns
+  const [columns, setColumns] = useLocalStorage(
+    "inventory_columns",
+    "grid-cols-4",
+  ); // Default 4 columns
 
   const handleOpenLootBox = (lootBox: LootBox) => {
     confirmOpenLootBox(lootBox);
@@ -45,33 +49,36 @@ export default function LootBoxInventory({
   };
 
   const handleColumnToggle = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setColumns(Number(e.target.value));
+    setColumns(e.target.value);
   };
 
   return (
-    <div className="p-4">
-      <Flex className="">
+    <div className="h-full w-full bg-gray-800 p-4 text-gray-100">
+      <Flex className="mb-4">
         <h2 className="text-2xl font-bold">Lootbox Inventory</h2>
         {/* Column toggle */}
-        <div className="mb-4 ml-auto">
-          <label htmlFor="column-toggle" className="mr-2">
+        <div className="ml-auto flex items-center">
+          <label
+            htmlFor="column-toggle"
+            className="mr-2 text-sm font-medium text-gray-300"
+          >
             Columns:
           </label>
           <select
             id="column-toggle"
             value={columns}
             onChange={handleColumnToggle}
-            className="rounded border bg-gray-800 p-2"
+            className="rounded-lg border border-gray-700 bg-gray-800 p-2 text-gray-300 shadow focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value={2}>2 Columns</option>
-            <option value={3}>3 Columns</option>
-            <option value={4}>4 Columns</option>
+            <option value={"grid-cols-3"}>3 Columns</option>
+            <option value={"grid-cols-4"}>4 Columns</option>
+            <option value={"grid-cols-5"}>5 Columns</option>
           </select>
         </div>
       </Flex>
 
       {/* Lootbox Inventory Grid */}
-      <div className={`grid grid-cols-${columns} gap-4`}>
+      <div className={`grid ${columns} gap-3`}>
         {/* {lootBoxInventory.length === 0 && (
           <div className="col-span-full text-center text-gray-500">
             No lootboxes in inventory
@@ -80,7 +87,7 @@ export default function LootBoxInventory({
 
         {/* Add Random Lootbox Button */}
         <button
-          className="h-full min-h-64 rounded-lg border-2 border-dashed border-green-500 bg-green-500/50 px-4 py-2 shadow-lg"
+          className="h-full rounded-lg border-2 border-dashed border-green-500 bg-green-600/20 px-4 py-2 text-sm font-semibold text-green-300 hover:bg-green-600/30"
           onClick={() => {
             const randomBox =
               availableLootBoxes[
@@ -97,10 +104,10 @@ export default function LootBoxInventory({
         </button>
 
         {/* Display Lootboxes */}
-        {lootBoxInventory.map((box, index) => (
+        {lootBoxInventory.map((box) => (
           <Flex
             key={box.id}
-            className={`relative flex-col rounded-lg p-3 shadow-lg ${box.background}`}
+            className={`relative flex-col rounded-lg p-3 shadow-lg transition hover:rotate-1 hover:scale-[1.02] ${box.background}`}
           >
             <Flex
               justify="center"
@@ -110,7 +117,7 @@ export default function LootBoxInventory({
               <img
                 src={box.backgroundImage}
                 alt={box.name}
-                className="z-5 absolute h-full w-full object-cover opacity-50"
+                className="z-5 absolute h-full w-full object-cover opacity-50 blur-[1px]"
               />
               <img
                 src={box.image}
@@ -140,24 +147,13 @@ export default function LootBoxInventory({
         ))}
 
         {/* Fill empty columns with dark squares */}
-        {lootBoxInventory.length < 64
-          ? Array.from({ length: 64 - lootBoxInventory.length - 1 }).map(
-              (_, index) => (
-                <div
-                  key={`placeholder-${index}`}
-                  className="h-64 rounded-lg bg-gray-700 shadow-lg"
-                ></div>
-              ),
-            )
-          : //instead just fill up last row
-            Array.from({
-              length: columns - (lootBoxInventory.length % columns) - 1,
-            }).map((_, index) => (
-              <div
-                key={`placeholder-${index}`}
-                className="h-64 rounded-lg bg-gray-700 shadow-lg"
-              ></div>
-            ))}
+        <InventoryFiller
+          entries={lootBoxInventory}
+          minEntries={64}
+          columns={columns}
+          adjustVal={1}
+          height={"h-64"}
+        />
       </div>
     </div>
   );

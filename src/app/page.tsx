@@ -5,9 +5,10 @@ import { v4 as uuidv4 } from "uuid";
 
 import { Box, Flex, Text } from "@radix-ui/themes";
 import { StarIcon } from "lucide-react";
-import LootBoxSide from "~/app/components/lootbox_side/lootbox_side";
-import { transformers } from "~/app/utils/drops";
 
+import LootBoxOpening from "~/app/components/lootbox_opening/lootbox_opening";
+import LootBoxSide from "~/app/components/lootbox_side/lootbox_side";
+import { availableLootBoxes } from "~/app/utils/drops";
 import useLocalStorage from "~/app/utils/useLocalStorage";
 
 type Rarity =
@@ -38,15 +39,6 @@ type LootBox = {
   drops: Item[];
 };
 
-const rarityColors: Record<Rarity, string> = {
-  common: "bg-gray-500",
-  rare: "bg-blue-500",
-  "super rare": "bg-purple-500",
-  epic: "bg-pink-500",
-  mythical: "bg-red-500",
-  legendary: "bg-yellow-500",
-};
-
 const App = () => {
   const [selectedLootBox, setSelectedLootBox] = useState<LootBox | null>(null);
   const [lootBoxInventory, setLootBoxInventory] = useLocalStorage(
@@ -61,150 +53,6 @@ const App = () => {
     [],
   );
   const [starrDropStage, setStarrDropStage] = useState<number>(0);
-  const [shakeEffect, setShakeEffect] = useState(true);
-
-  const availableLootBoxes: LootBox[] = [
-    {
-      id: uuidv4(),
-      name: "Normal Lootbox",
-      game: "Fantasy Quest",
-      type: "crate",
-      background: "bg-blue-500",
-      backgroundImage: "/images/backgrounds/normal-lootbox-bg.jpg",
-      image: "/images/lootboxes/normal-lootbox.png",
-      drops: [
-        { name: "Common Sword", rarity: "common", chance: 70, image: "" },
-        { name: "Rare Shield", rarity: "rare", chance: 20, image: "" },
-        {
-          name: "Legendary Helmet",
-          rarity: "legendary",
-          chance: 0.5,
-          image: "",
-        },
-      ],
-    },
-    {
-      id: uuidv4(),
-      name: "Star Drop",
-      game: "Galaxy Adventures",
-      type: "starrdrop",
-      background: "bg-yellow-500",
-      backgroundImage: "/images/backgrounds/starr.jpeg",
-      image: "/images/lootboxes/starr-drop.webp",
-      drops: [
-        { name: "Rare Gem", rarity: "rare", chance: 80, image: "" },
-        {
-          name: "Super Rare Crystal",
-          rarity: "super rare",
-          chance: 15,
-          image: "",
-        },
-        {
-          name: "Legendary Relic",
-          rarity: "legendary",
-          chance: 0.5,
-          image: "",
-        },
-      ],
-    },
-    {
-      id: uuidv4(),
-      name: "Summoner Crystal",
-      game: "Transformers Universe",
-      type: "summon",
-      background: "bg-red-500",
-      backgroundImage: "/images/backgrounds/summoner_crystal.avif",
-      image: "/images/lootboxes/summoner-crystal.webp",
-      drops: transformers,
-    },
-    {
-      id: "loot-crate",
-      name: "Loot Crate",
-      game: "Adventure Saga",
-      type: "crate",
-      background: "bg-green-500",
-      backgroundImage: "/images/backgrounds/lootcrate.jpg",
-      image: "/images/lootboxes/loot-crate.png",
-      drops: [
-        {
-          name: "Treasure Map",
-          rarity: "common",
-          chance: 60,
-          image: "/images/lootboxes/treasure-map.png",
-        },
-        {
-          name: "Golden Sword",
-          rarity: "rare",
-          chance: 25,
-          image: "/images/lootboxes/golden-sword.png",
-        },
-        {
-          name: "Ancient Artifact",
-          rarity: "super rare",
-          chance: 10,
-          image: "/images/lootboxes/ancient-artifact.png",
-        },
-      ],
-    },
-    {
-      id: "portal",
-      name: "Portal",
-      game: "Gacha Adventures",
-      type: "summon",
-      background: "bg-purple-500",
-      backgroundImage: "/images/backgrounds/gachaportal.jpg",
-      image: "/images/lootboxes/gacha_crystal.webp",
-      drops: [
-        {
-          name: "Hero A",
-          rarity: "common",
-          chance: 50,
-          image: "/images/lootboxes/hero-a.png",
-        },
-        {
-          name: "Hero B",
-          rarity: "rare",
-          chance: 30,
-          image: "/images/lootboxes/hero-b.png",
-        },
-        {
-          name: "Hero S",
-          rarity: "legendary",
-          chance: 5,
-          image: "/images/lootboxes/hero-s.png",
-        },
-      ],
-    },
-    {
-      id: "skin-crate",
-      name: "Skin Crate",
-      game: "Battle Royale Legends",
-      type: "skin",
-      background: "bg-orange-500",
-      backgroundImage: "/images/backgrounds/skincrate.jpg",
-      image: "/images/lootboxes/skin-crate.png",
-      drops: [
-        {
-          name: "Epic Outfit",
-          rarity: "epic",
-          chance: 15,
-          image: "/images/lootboxes/epic-outfit.png",
-        },
-        {
-          name: "Rare Outfit",
-          rarity: "rare",
-          chance: 50,
-          image: "/images/lootboxes/rare-outfit.png",
-        },
-        {
-          name: "Legendary Outfit",
-          rarity: "legendary",
-          chance: 2,
-          image: "/images/lootboxes/legendary-outfit.png",
-        },
-      ],
-    },
-  ];
 
   const addLootBoxToInventory = (box: LootBox) => {
     setLootBoxInventory([...lootBoxInventory, { ...box, id: uuidv4() }]);
@@ -218,11 +66,14 @@ const App = () => {
       setStarrDropStage(1);
     } else {
       setTimeout(() => {
-        const items = simulateDrops(box, box.type === "summon" ? 1 : 3);
+        const items = simulateDrops(
+          box,
+          box.type === "summon" ? 1 : Math.floor(Math.random() * 5) + 2,
+        );
         setOpenedItems(items);
         setCollectedItems([...collectedItems, ...items]);
         finalizeOpening(box);
-      }, 200);
+      }, 500);
     }
   };
 
@@ -266,234 +117,6 @@ const App = () => {
     }
   };
 
-  const renderLootBoxAnimation = () => {
-    if (!selectedLootBox) return null;
-
-    switch (selectedLootBox.type) {
-      case "crate":
-      case "skin":
-        return (
-          <Flex
-            align="center"
-            justify="center"
-            // className="relative flex h-full w-full flex-col items-center justify-center"
-            className={`relative flex h-full w-full flex-col items-center justify-center ${selectedLootBox.background}`}
-          >
-            <img
-              src={selectedLootBox.backgroundImage}
-              alt={selectedLootBox.name}
-              className="z-5 absolute h-full w-full object-cover opacity-50"
-            />
-            <img
-              src={selectedLootBox.image}
-              alt={selectedLootBox.name}
-              className={`z-10 h-72 w-72 transition duration-200 ease-in-out ${isOpening ? "animate-wiggle" : ""}`}
-            />
-            {openedItems.length > 0 && (
-              <Flex className="absolute z-20 mx-4 mt-4 grid grid-cols-3 gap-4">
-                {openedItems.map((item, index) => (
-                  <Flex
-                    key={index}
-                    className={`animate-wiggle flex-col items-center rounded-lg p-3 ${rarityColors[item.rarity]} border border-white/30 bg-opacity-90 shadow-lg`}
-                  >
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="mx-auto mb-2 h-16 w-16 rounded-md bg-black/30 object-cover"
-                    />
-                    <Text className="mx-auto text-center font-semibold">
-                      {item.name}
-                    </Text>
-                    <Flex
-                      justify="center"
-                      align="center"
-                      className={`z-20 mt-2 space-x-0.5 rounded-full bg-black/40 p-1`}
-                    >
-                      {[...Array(5)].map((_, i) => (
-                        <StarIcon
-                          key={i}
-                          className={`size-4 rounded-full ${
-                            i <
-                            (item.rarity === "legendary"
-                              ? 5
-                              : item.rarity === "epic"
-                                ? 4
-                                : item.rarity === "super rare"
-                                  ? 3
-                                  : item.rarity === "rare"
-                                    ? 2
-                                    : 1)
-                              ? "text-yellow-500"
-                              : "text-gray-500"
-                          }`}
-                        />
-                      ))}
-                    </Flex>
-                    {/* <Text className="capitalize italic"> {item.rarity}</Text> */}
-                  </Flex>
-                ))}
-              </Flex>
-            )}
-          </Flex>
-        );
-
-      case "summon":
-        return (
-          <Flex
-            align="center"
-            justify="center"
-            className="relative h-full flex-col"
-          >
-            <img
-              src={selectedLootBox.backgroundImage}
-              alt={selectedLootBox.name}
-              className="z-5 absolute h-full w-full animate-pulse object-cover"
-            />
-            <Flex
-              align="center"
-              justify="center"
-              className="portal-animation relative"
-            >
-              <img
-                src="/images/backgrounds/portal.png"
-                alt="Portal"
-                className="mb-4 animate-spin opacity-50"
-              />
-              {openedItems.length > 0 && (
-                <div className="absolute flex flex-col items-center space-y-4">
-                  {openedItems.map((item, index) => (
-                    <div
-                      key={index}
-                      className={`animate-wiggle rounded-3xl border border-white/50 bg-opacity-80 p-4 ${
-                        item.rarity ? rarityColors[item.rarity] : ""
-                      }`}
-                    >
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className="h-auto w-72 p-4"
-                      />
-                      <p className="my-2 text-xl font-semibold">{item.name}</p>
-                      <Flex
-                        justify="center"
-                        align="center"
-                        className={`z-20 h-full space-x-0.5 rounded-full bg-black/50 p-2`}
-                      >
-                        {[...Array(5)].map((_, i) => (
-                          <StarIcon
-                            key={i}
-                            className={`size-5 rounded-full ${
-                              i <
-                              (item.rarity === "legendary"
-                                ? 5
-                                : item.rarity === "epic"
-                                  ? 4
-                                  : item.rarity === "super rare"
-                                    ? 3
-                                    : item.rarity === "rare"
-                                      ? 2
-                                      : 1)
-                                ? "text-yellow-500"
-                                : "text-gray-500"
-                            }`}
-                          />
-                        ))}
-                      </Flex>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </Flex>
-          </Flex>
-        );
-
-      case "starrdrop":
-        return (
-          <Flex
-            align="center"
-            justify="center"
-            className={`h-full flex-col starrdrop-stage-${starrDropStage}`}
-            onClick={handleStarrDropClick}
-          >
-            <img
-              src={selectedLootBox.backgroundImage}
-              alt={selectedLootBox.name}
-              className="z-5 absolute h-full w-full object-cover opacity-50"
-            />
-            {openedItems.length > 0 ? (
-              <Flex
-                className={`z-10 flex-col items-center rounded-lg p-3 ${rarityColors[openedItems[0]?.rarity]} border border-white/30 bg-opacity-90 shadow-lg`}
-              >
-                <img
-                  src={openedItems[0]?.image}
-                  alt={openedItems[0]?.name}
-                  className="mx-auto mb-2 h-16 w-16 rounded-md bg-black/30 object-cover"
-                />
-                <Text className="mx-auto text-center font-semibold">
-                  {openedItems[0]?.name}
-                </Text>
-                <Flex
-                  justify="center"
-                  align="center"
-                  className={`z-20 mt-2 space-x-0.5 rounded-full bg-black/40 p-1`}
-                >
-                  {[...Array(5)].map((_, i) => (
-                    <StarIcon
-                      key={i}
-                      className={`size-4 rounded-full ${
-                        i <
-                        (openedItems[0]?.rarity === "legendary"
-                          ? 5
-                          : openedItems[0]?.rarity === "epic"
-                            ? 4
-                            : openedItems[0]?.rarity === "super rare"
-                              ? 3
-                              : openedItems[0]?.rarity === "rare"
-                                ? 2
-                                : 1)
-                          ? "text-yellow-500"
-                          : "text-gray-500"
-                      }`}
-                    />
-                  ))}
-                </Flex>
-                {/* <Text className="capitalize italic"> {item.rarity}</Text> */}
-              </Flex>
-            ) : (
-              <Flex justify="center" align="center" className="z-10 flex-col">
-                <img
-                  src="/images/lootboxes/starr-drop.webp"
-                  alt="Star Drop"
-                  onClick={() => {
-                    setShakeEffect(true);
-                  }}
-                  onAnimationEnd={() => setShakeEffect(false)}
-                  className={`h-64 w-auto ${shakeEffect ? "animate-wiggle" : ""} cursor-pointer select-none transition duration-200 ease-in-out hover:scale-105`}
-                />
-                <p className="mt-2 text-center text-lg">
-                  {[...Array(5)].map((_, i) => (
-                    <span
-                      key={i}
-                      className={`mx-1 inline-block h-4 w-4 rounded-full ${
-                        i < starrDropStage - 1
-                          ? "bg-yellow-500" // Active (completed) dots
-                          : i === starrDropStage - 1
-                            ? "border-2 border-yellow-500 bg-gray-500" // Current stage (highlighted) with circle
-                            : "bg-gray-300" // Inactive dots
-                      }`}
-                    />
-                  ))}
-                </p>
-              </Flex>
-            )}
-          </Flex>
-        );
-
-      default:
-        return null;
-    }
-  };
-
   const confirmOpenLootBox = (box: LootBox) => {
     setSelectedLootBox(box);
     setOpenedItems([]);
@@ -506,15 +129,27 @@ const App = () => {
   };
 
   return (
-    <div className="flex min-h-screen flex-row bg-gray-900 text-white">
+    <Flex className="min-h-screen flex-row bg-gray-900 text-white">
       {/* Left Side: Opening Area */}
-      <Flex className="h-screen w-1/2 flex-col items-center justify-center p-4">
-        <Box className="relative h-full w-full overflow-y-auto rounded-xl bg-gray-800">
-          <h2 className="mb-4 text-2xl font-semibold">Opening Area</h2>
-          <div className="relative h-full w-full">
-            {renderLootBoxAnimation()}
+      <Flex
+        align="center"
+        justify="center"
+        className="h-screen w-1/2 flex-col items-center justify-center bg-gradient-to-br from-black via-gray-900 to-blue-800 p-4"
+      >
+        <div className="relative h-full w-full overflow-hidden rounded-2xl bg-gray-900 shadow-lg shadow-blue-800/50">
+          {/* Outer frame with glowing effect */}
+          <div className="absolute inset-0 z-20 animate-pulse rounded-2xl border-2 border-dashed border-blue-400/40"></div>
+          {/* Content area */}
+          <div className="relative z-30 h-full w-full overflow-y-auto">
+            <LootBoxOpening
+              selectedLootBox={selectedLootBox}
+              openedItems={openedItems}
+              isOpening={isOpening}
+              starrDropStage={starrDropStage}
+              handleStarrDropClick={handleStarrDropClick}
+            />
           </div>
-        </Box>
+        </div>
       </Flex>
 
       {/* Right Side: LootBox Side */}
@@ -549,7 +184,7 @@ const App = () => {
           </div>
         </div>
       )}
-    </div>
+    </Flex>
   );
 };
 
