@@ -177,7 +177,7 @@ const LootBoxOpening: React.FC<LootBoxAnimationProps> = ({
               <p className="mt-2 text-center text-lg">
                 {[...Array(5)].map((_, i) => (
                   <span
-                    key={i}
+                    key={"star" + i}
                     className={`mx-1 inline-block h-4 w-4 rounded-full ${
                       i < starrDropStage - 1
                         ? "bg-yellow-500" // Active (completed) dots

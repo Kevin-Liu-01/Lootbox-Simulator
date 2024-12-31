@@ -63,7 +63,7 @@ export default function LootBoxInventory({
 
   return (
     <Flex className="h-full w-full flex-col bg-gray-800 p-3 text-gray-100">
-      <Flex className="mb-4 flex-col gap-4">
+      <Flex className="mb-3 flex-col gap-3">
         <Flex>
           <Flex align="center" className="gap-3 text-2xl font-bold">
             <BoxIcon size={24} />
@@ -91,11 +91,11 @@ export default function LootBoxInventory({
         </Flex>
 
         {/* Filter Section */}
-        <Flex className="gap-2">
+        <Flex className="w-full gap-2 overflow-x-auto rounded-lg bg-gray-900 p-2">
           {lootBoxCounts.map(({ type, count }) => (
             <button
               key={type}
-              className={`rounded-md px-4 py-2 text-sm font-semibold text-gray-200 transition ${
+              className={`text-nowrap rounded-md px-4 py-2 text-sm font-semibold text-gray-200 transition ${
                 filter === type
                   ? `${
                       availableLootBoxes.find((box) => box.name === type)
@@ -123,57 +123,60 @@ export default function LootBoxInventory({
         />
 
         {/* Display Lootboxes */}
-        {filteredLootBoxes.map((box) => (
-          <Flex
-            key={box.id}
-            className={`relative flex-col rounded-xl p-3 shadow-[0_5px_15px_rgba(0,0,0,0.5)] transition-transform duration-300 hover:rotate-1 hover:scale-[1.02] ${box.background} border-2 border-transparent bg-gradient-to-br`}
-          >
-            {/* Glowing Image Container */}
+        {filteredLootBoxes
+          .slice() // Create a shallow copy to avoid mutating the original array
+          .reverse() // Reverse the array
+          .map((box) => (
             <Flex
-              justify="center"
-              align="center"
-              className="relative overflow-hidden rounded-md bg-black/30 p-3 shadow-inner"
+              key={box.id}
+              className={`relative flex-col rounded-xl p-3 shadow-[0_5px_15px_rgba(0,0,0,0.5)] transition-transform duration-300 hover:rotate-1 hover:scale-[1.02] ${box.background} border-2 border-transparent bg-gradient-to-br`}
             >
-              <img
-                src={box.backgroundImage}
-                alt={box.name}
-                className="z-5 absolute h-full w-full object-cover opacity-50 blur-[1px]"
-              />
-              <div className="animate-glow absolute inset-0 rounded-md border border-blue-800/30"></div>
-              <img
-                src={box.image}
-                alt={box.name}
-                className="z-10 mb-2 h-24 w-full rounded-lg object-contain transition-transform duration-300 hover:scale-110"
-              />
-            </Flex>
-
-            {/* Box Title */}
-            <h3 className="text-md mt-3 font-extrabold tracking-wide text-white">
-              {box.name}
-            </h3>
-
-            {/* Game Name */}
-            <p className="mb-3 text-xs italic text-gray-200">{box.game}</p>
-
-            {/* Open and Delete Buttons */}
-            <Flex className="mt-auto w-full flex-wrap gap-2">
-              <button
-                onClick={() => handleOpenLootBox(box)}
-                className="flex w-full items-center justify-center rounded-md bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-2 text-xs font-semibold text-white shadow-[0_0_10px_2px_rgba(0,200,255,0.5)] transition-transform hover:scale-105 hover:from-blue-500 hover:to-blue-600"
+              {/* Glowing Image Container */}
+              <Flex
+                justify="center"
+                align="center"
+                className="relative h-full overflow-hidden rounded-md bg-black/30 p-3 shadow-inner"
               >
-                <PackageOpenIcon size={16} className="mr-1" />
-                Open
-              </button>
-              <button
-                onClick={() => handleDeleteLootBox(box.id)}
-                className="flex w-full items-center justify-center rounded-md bg-gradient-to-r from-red-600 to-red-700 px-3 py-2 text-xs font-semibold text-white shadow-[0_0_10px_2px_rgba(255,50,50,0.5)] transition-transform hover:scale-105 hover:from-red-500 hover:to-red-600"
-              >
-                <PackageIcon size={16} className="mr-1" />
-                Delete
-              </button>
+                <img
+                  src={box.backgroundImage}
+                  alt={box.name}
+                  className="z-5 absolute h-full w-full object-cover opacity-50 blur-[1px]"
+                />
+                <div className="animate-glow absolute inset-0 rounded-md border border-blue-800/30"></div>
+                <img
+                  src={box.image}
+                  alt={box.name}
+                  className="z-10 mb-2 h-24 w-full rounded-lg object-contain transition-transform duration-300 hover:scale-110"
+                />
+              </Flex>
+
+              {/* Box Title */}
+              <h3 className="text-md mt-3 font-extrabold tracking-wide text-white">
+                {box.name}
+              </h3>
+
+              {/* Game Name */}
+              <p className="mb-3 text-xs italic text-gray-200">{box.game}</p>
+
+              {/* Open and Delete Buttons */}
+              <Flex className="mt-auto w-full flex-wrap gap-2">
+                <button
+                  onClick={() => handleOpenLootBox(box)}
+                  className="flex w-full items-center justify-center rounded-md bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-2 text-xs font-semibold text-white shadow-[0_0_10px_2px_rgba(0,200,255,0.5)] transition-transform hover:scale-105 hover:from-blue-500 hover:to-blue-600"
+                >
+                  <PackageOpenIcon size={16} className="mr-1" />
+                  Open
+                </button>
+                <button
+                  onClick={() => handleDeleteLootBox(box.id)}
+                  className="flex w-full items-center justify-center rounded-md bg-gradient-to-r from-red-600 to-red-700 px-3 py-2 text-xs font-semibold text-white shadow-[0_0_10px_2px_rgba(255,50,50,0.5)] transition-transform hover:scale-105 hover:from-red-500 hover:to-red-600"
+                >
+                  <PackageIcon size={16} className="mr-1" />
+                  Delete
+                </button>
+              </Flex>
             </Flex>
-          </Flex>
-        ))}
+          ))}
 
         {/* Fill empty columns with dark squares */}
         <InventoryFiller

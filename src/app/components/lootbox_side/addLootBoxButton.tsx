@@ -15,11 +15,11 @@ const AddLootBoxButton = ({
     : null;
 
   const SkeletonCard = () => (
-    <div className="z-5 h-full w-full select-none rounded-lg border border-transparent bg-gradient-to-br from-gray-700 to-gray-800 p-3 text-transparent opacity-40">
+    <Flex className="z-5 h-full w-full select-none flex-col rounded-lg border border-transparent bg-gradient-to-br from-gray-700 to-gray-800 p-3 text-transparent opacity-40">
       {/* Glowing Image Placeholder */}
       <div className="mb-2 h-32 w-full animate-pulse rounded-md bg-gray-600"></div>
       {/* Title and Game Name Placeholder */}
-      <h3 className="mt-3 w-3/4 animate-pulse rounded-md bg-gray-600 text-sm font-extrabold tracking-wide">
+      <h3 className="mt-1 w-3/4 animate-pulse rounded-md bg-gray-600 text-sm font-extrabold tracking-wide">
         A
       </h3>
       <p className="mb-3 mt-2 w-1/2 animate-pulse rounded-md bg-gray-500 text-xs">
@@ -34,7 +34,7 @@ const AddLootBoxButton = ({
           A
         </div>
       </Flex>
-    </div>
+    </Flex>
   );
 
   return filter ? (

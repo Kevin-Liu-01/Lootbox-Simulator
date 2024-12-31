@@ -52,7 +52,7 @@ export default function CollectedItems({
       : collectedItems.filter((item) => item.rarity === selectedRarity);
 
   return (
-    <Flex className="mt-4 h-72 w-full flex-col rounded-xl border border-gray-700 bg-gray-800 p-4 shadow-lg">
+    <Flex className="mt-4 h-[15rem] w-full flex-col rounded-xl border border-gray-700 bg-gray-800 p-4 shadow-lg">
       <Flex className="items-center justify-between">
         <Flex
           align="center"
@@ -103,51 +103,54 @@ export default function CollectedItems({
       <div
         className={`grid ${columns} mt-4 gap-3 overflow-y-auto rounded-md bg-gray-900 p-3`}
       >
-        {filteredItems.map((item: Item, index: number) => (
-          <div
-            key={index}
-            className={`relative h-32 transform rounded-lg p-4 text-center shadow-lg transition duration-300 hover:rotate-1 hover:scale-105 hover:shadow-2xl ${rarityColors[item.rarity]} hover:border-gradient-to-r border-4 border-transparent to-${rarityColors[
-              item.rarity
-            ]
-              ?.split(" ")[1]
-              ?.replace("from-", "")}`}
-          >
-            {/* Glow Effect */}
-            <div className="absolute inset-0 w-full rounded-lg opacity-0 transition-opacity duration-300 hover:opacity-100">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent blur-lg"></div>
-            </div>
-
-            {/* Item Image */}
-            <div className="relative mx-auto h-14 w-14 rounded-full bg-gradient-to-tr from-gray-800/40 to-gray-700/40 p-1 shadow-md">
-              <img
-                src={item?.image}
-                alt={item.name}
-                className="h-full w-full rounded-full"
-              />
-            </div>
-
-            {/* Delete Button */}
-            <button
-              className="absolute left-1 top-1 rounded-full bg-red-500/50 p-1 text-white hover:bg-red-500/70"
-              onClick={() => deleteSelectedItem(item.id)}
-            >
-              <TrashIcon size={16} />
-            </button>
-
+        {filteredItems
+          .slice() // Create a shallow copy to avoid mutating the original array
+          .reverse() // Reverse the array
+          .map((item: Item, index: number) => (
             <div
-              className={`absolute right-1 top-1 rounded-full border border-white/40 px-3 py-1 text-[0.5rem] font-bold text-white shadow-lg ${
-                rarityColors[item.rarity]
-              }`}
+              key={index}
+              className={`relative h-32 transform rounded-lg p-4 text-center shadow-lg transition duration-300 hover:rotate-1 hover:scale-105 hover:shadow-2xl ${rarityColors[item.rarity]} hover:border-gradient-to-r border-4 border-transparent to-${rarityColors[
+                item.rarity
+              ]
+                ?.split(" ")[1]
+                ?.replace("from-", "")}`}
             >
-              {item.rarity.toUpperCase()}
-            </div>
+              {/* Glow Effect */}
+              <div className="absolute inset-0 w-full rounded-lg opacity-0 transition-opacity duration-300 hover:opacity-100">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent blur-lg"></div>
+              </div>
 
-            {/* Item Details */}
-            <p className="mt-3 truncate text-sm font-semibold text-white">
-              {item.name}
-            </p>
-          </div>
-        ))}
+              {/* Item Image */}
+              <div className="relative mx-auto h-14 w-14 rounded-full bg-gradient-to-tr from-gray-800/40 to-gray-700/40 p-1 shadow-md">
+                <img
+                  src={item?.image}
+                  alt={item.name}
+                  className="h-full w-full rounded-full"
+                />
+              </div>
+
+              {/* Delete Button */}
+              <button
+                className="absolute left-1 top-1 rounded-full bg-red-500/50 p-1 text-white hover:bg-red-500/70"
+                onClick={() => deleteSelectedItem(item.id)}
+              >
+                <TrashIcon size={16} />
+              </button>
+
+              <div
+                className={`absolute right-1 top-1 rounded-full border border-white/40 px-3 py-1 text-[0.5rem] font-bold text-white shadow-lg ${
+                  rarityColors[item.rarity]
+                }`}
+              >
+                {item.rarity.toUpperCase()}
+              </div>
+
+              {/* Item Details */}
+              <p className="mt-3 truncate text-sm font-semibold text-white">
+                {item.name}
+              </p>
+            </div>
+          ))}
 
         <InventoryFiller
           entries={filteredItems}

@@ -139,9 +139,13 @@ const App = () => {
 
       {/* Modal */}
       {isModalOpen && selectedLootBox && (
-        <div className="fixed inset-0 z-20 flex items-center justify-center bg-black bg-opacity-75">
+        <Flex
+          align="center"
+          justify="center"
+          className="fixed inset-0 z-20 bg-black bg-opacity-75"
+        >
           <div
-            className={`${selectedLootBox.background} relative w-96 max-w-full rounded-xl p-6 text-center text-gray-100 shadow-lg`}
+            className={`${selectedLootBox.background} relative w-96 max-w-full rounded-xl p-5 text-center text-gray-100 shadow-lg`}
           >
             <XIcon
               className="absolute right-4 top-4 size-6 cursor-pointer text-gray-800 hover:text-gray-700"
@@ -160,13 +164,13 @@ const App = () => {
               <img
                 src={selectedLootBox.image}
                 alt={selectedLootBox.name}
-                className="mx-auto mb-2 h-24 w-24 object-contain"
+                className="z-10 mx-auto mb-2 h-24 w-24 object-contain"
               />
               {selectedLootBox.backgroundImage && (
                 <img
                   src={selectedLootBox.backgroundImage}
                   alt="Background"
-                  className="absolute inset-0 h-full w-full border object-cover opacity-20 blur-[2px]"
+                  className="z-5 absolute inset-0 h-full w-full border object-cover opacity-20 blur-[2px]"
                 />
               )}
             </div>
@@ -218,7 +222,7 @@ const App = () => {
               </button>
             </Flex>
           </div>
-        </div>
+        </Flex>
       )}
     </Flex>
   );

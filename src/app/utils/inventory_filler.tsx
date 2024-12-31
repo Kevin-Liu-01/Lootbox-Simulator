@@ -14,25 +14,25 @@ export default function InventoryFiller({
   adjustVal: number;
   height?: string;
 }) {
-  const placeholders =
-    entries.length < minEntries
-      ? Array.from({ length: minEntries - entries.length })
-      : Array.from({
-          length:
-            Number(columns.slice(-1)) -
-            adjustVal -
-            (entries.length % Number(columns.slice(-1))),
-        });
+  const numColumns = Number(columns.slice(-1)); // Extract the number of columns
+  const totalEntries = entries.length + adjustVal; // Ensure we meet the minimum entries
+  const remainder = totalEntries % numColumns; // Calculate entries in the last row
+  const placeholders = numColumns - remainder; // Fill remaining slots in the row
 
   return (
     <>
-      {placeholders.map((_, index) => (
-        <div
+      {/* <div className="absolute">
+        {totalEntries + "," + numColumns + "," + placeholders}
+      </div> */}
+      {Array.from({ length: placeholders }).map((_, index) => (
+        <Flex
+          align="center"
+          justify="center"
           key={`placeholder-${index}`}
-          className={`relative min-h-full ${height} flex items-center justify-center overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 shadow-lg`}
+          className={`relative min-h-full ${height} overflow-hidden rounded-lg bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 shadow-lg`}
         >
           {/* Holographic Border Animation */}
-          <div className="absolute inset-0 z-10 h-full w-full rounded-lg border-4 border-transparent bg-gradient-to-r from-gray-400 via-gray-500 to-gray-600 bg-clip-border opacity-30" />
+          <div className="absolute h-full w-full border-4 border-transparent bg-gradient-to-r from-gray-400 via-gray-500 to-gray-600 opacity-30" />
 
           {/* High-Tech Holographic Effect */}
           {/* <div className="absolute -z-10 h-full w-full animate-pulse bg-gradient-to-r from-purple-500 via-blue-500 to-cyan-500 opacity-20 blur-md"></div> */}
@@ -57,7 +57,7 @@ export default function InventoryFiller({
               Empty Slot
             </span>
           </Flex>
-        </div>
+        </Flex>
       ))}
     </>
   );
