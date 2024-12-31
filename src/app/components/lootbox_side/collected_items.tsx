@@ -143,7 +143,7 @@ export default function CollectedItems({
             </div>
 
             {/* Item Details */}
-            <p className="mt-3 truncate text-base font-extrabold tracking-wide text-white">
+            <p className="mt-3 truncate text-sm font-semibold text-white">
               {item.name}
             </p>
           </div>

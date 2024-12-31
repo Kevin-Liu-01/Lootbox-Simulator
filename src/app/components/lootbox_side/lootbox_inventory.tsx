@@ -148,25 +148,25 @@ export default function LootBoxInventory({
             </Flex>
 
             {/* Box Title */}
-            <h3 className="mt-3 text-lg font-extrabold tracking-wide text-white">
+            <h3 className="text-md mt-3 font-extrabold tracking-wide text-white">
               {box.name}
             </h3>
 
             {/* Game Name */}
-            <p className="mb-3 text-sm italic text-gray-200">{box.game}</p>
+            <p className="mb-3 text-xs italic text-gray-200">{box.game}</p>
 
             {/* Open and Delete Buttons */}
             <Flex className="mt-auto w-full flex-wrap gap-2">
               <button
                 onClick={() => handleOpenLootBox(box)}
-                className="flex w-full items-center justify-center rounded-md bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-2 text-sm font-semibold text-white shadow-[0_0_10px_2px_rgba(0,200,255,0.5)] transition-transform hover:scale-105 hover:from-blue-500 hover:to-blue-600"
+                className="flex w-full items-center justify-center rounded-md bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-2 text-xs font-semibold text-white shadow-[0_0_10px_2px_rgba(0,200,255,0.5)] transition-transform hover:scale-105 hover:from-blue-500 hover:to-blue-600"
               >
                 <PackageOpenIcon size={16} className="mr-1" />
                 Open
               </button>
               <button
                 onClick={() => handleDeleteLootBox(box.id)}
-                className="flex w-full items-center justify-center rounded-md bg-gradient-to-r from-red-600 to-red-700 px-3 py-2 text-sm font-semibold text-white shadow-[0_0_10px_2px_rgba(255,50,50,0.5)] transition-transform hover:scale-105 hover:from-red-500 hover:to-red-600"
+                className="flex w-full items-center justify-center rounded-md bg-gradient-to-r from-red-600 to-red-700 px-3 py-2 text-xs font-semibold text-white shadow-[0_0_10px_2px_rgba(255,50,50,0.5)] transition-transform hover:scale-105 hover:from-red-500 hover:to-red-600"
               >
                 <PackageIcon size={16} className="mr-1" />
                 Delete

@@ -140,21 +140,23 @@ const App = () => {
       {/* Modal */}
       {isModalOpen && selectedLootBox && (
         <div className="fixed inset-0 z-20 flex items-center justify-center bg-black bg-opacity-75">
-          <div className="relative w-96 max-w-full rounded-lg bg-gray-800 p-6 text-center text-gray-100 shadow-lg">
+          <div
+            className={`${selectedLootBox.background} relative w-96 max-w-full rounded-xl p-6 text-center text-gray-100 shadow-lg`}
+          >
             <XIcon
-              className="absolute right-4 top-4 size-6 cursor-pointer text-gray-400 hover:text-gray-200"
+              className="absolute right-4 top-4 size-6 cursor-pointer text-gray-800 hover:text-gray-700"
               onClick={() => setIsModalOpen(false)}
             />
             {/* Loot Box Title */}
-            <h2 className="mb-2 text-2xl font-bold text-white">
+            <h2 className="mb-1 text-2xl font-bold text-white">
               {selectedLootBox.name}
             </h2>
             {/* Game Name */}
-            <p className="mb-4 text-sm italic text-gray-300">
+            <p className="mb-4 text-sm italic text-gray-200">
               From: {selectedLootBox.game}
             </p>
             {/* Loot Box Image */}
-            <div className="relative mb-4 overflow-hidden rounded-lg bg-gray-700 p-4 shadow-inner">
+            <div className="relative mb-3 overflow-hidden rounded-lg border border-gray-900/60 bg-gray-700 p-4 shadow-inner">
               <img
                 src={selectedLootBox.image}
                 alt={selectedLootBox.name}
@@ -164,12 +166,12 @@ const App = () => {
                 <img
                   src={selectedLootBox.backgroundImage}
                   alt="Background"
-                  className="absolute inset-0 h-full w-full object-cover opacity-20 blur-[2px]"
+                  className="absolute inset-0 h-full w-full border object-cover opacity-20 blur-[2px]"
                 />
               )}
             </div>
             {/* Type */}
-            <p className="mb-4 text-sm font-medium capitalize text-blue-400">
+            <p className="mb-3 rounded-lg bg-gray-800/20 py-2 text-sm font-medium capitalize text-gray-200">
               Type: {selectedLootBox.type}
             </p>
             {/* Potential Drops */}
@@ -201,20 +203,20 @@ const App = () => {
               </ul>
             </div>
             {/* Action Buttons */}
-            <div className="flex justify-center gap-4">
+            <Flex justify="center" className="gap-3">
               <button
-                className="rounded-lg bg-green-500 px-4 py-2 text-sm font-semibold text-white shadow-lg transition-transform hover:scale-105"
+                className="w-full rounded-lg border border-gray-800/40 bg-green-500 px-4 py-2 text-sm font-semibold text-white shadow-lg transition-transform hover:scale-105"
                 onClick={handleConfirmOpen}
               >
                 Confirm
               </button>
               <button
-                className="rounded-lg bg-red-500 px-4 py-2 text-sm font-semibold text-white shadow-lg transition-transform hover:scale-105"
+                className="w-full rounded-lg border border-gray-800/40 bg-red-500 px-4 py-2 text-sm font-semibold text-white shadow-lg transition-transform hover:scale-105"
                 onClick={() => setIsModalOpen(false)}
               >
                 Cancel
               </button>
-            </div>
+            </Flex>
           </div>
         </div>
       )}

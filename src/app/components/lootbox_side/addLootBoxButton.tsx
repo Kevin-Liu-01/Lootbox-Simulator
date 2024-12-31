@@ -19,18 +19,18 @@ const AddLootBoxButton = ({
       {/* Glowing Image Placeholder */}
       <div className="mb-2 h-32 w-full animate-pulse rounded-md bg-gray-600"></div>
       {/* Title and Game Name Placeholder */}
-      <h3 className="text-md mt-3 w-3/4 animate-pulse rounded-md bg-gray-600 font-extrabold tracking-wide">
+      <h3 className="mt-3 w-3/4 animate-pulse rounded-md bg-gray-600 text-sm font-extrabold tracking-wide">
         A
       </h3>
-      <p className="mb-3 mt-2 w-1/2 animate-pulse rounded-md bg-gray-500 text-sm">
+      <p className="mb-3 mt-2 w-1/2 animate-pulse rounded-md bg-gray-500 text-xs">
         A
       </p>
       {/* Buttons */}
       <Flex className="mt-auto w-full flex-wrap gap-2">
-        <div className="w-full animate-pulse rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold">
+        <div className="w-full animate-pulse rounded-md bg-gray-600 px-4 py-2 text-xs font-semibold">
           A
         </div>
-        <div className="w-full animate-pulse rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold">
+        <div className="w-full animate-pulse rounded-md bg-gray-600 px-4 py-2 text-xs font-semibold">
           A
         </div>
       </Flex>

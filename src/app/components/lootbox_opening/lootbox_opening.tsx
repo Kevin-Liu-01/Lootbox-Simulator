@@ -1,8 +1,19 @@
 // lootBoxAnimation.tsx
 import React, { useState } from "react";
-import { Flex } from "@radix-ui/themes";
+import { Flex, Text } from "@radix-ui/themes";
 import { LootBox, Item } from "~/app/utils/types";
 import ItemCard from "~/app/components/lootbox_opening/item_card";
+import {
+  FlashingLights,
+  SpinningLightCircle,
+  BackgroundLightning,
+  BackgroundLightning2,
+  Particles,
+  OpeningSparks,
+  SpeedParticles,
+  Portal,
+} from "~/app/utils/staticImages";
+import { GiftIcon } from "lucide-react";
 
 interface LootBoxAnimationProps {
   selectedLootBox: LootBox | null;
@@ -28,9 +39,11 @@ const LootBoxOpening: React.FC<LootBoxAnimationProps> = ({
         justify="center"
         className="h-full w-full flex-col rounded-2xl border-2 border-dashed border-indigo-600 bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-950 p-8 text-center"
       >
-        <h1 className="mb-4 text-4xl font-extrabold">
-          Welcome to the Lootbox Simulator!
-        </h1>
+        <GiftIcon className="mr-2 size-12 rounded-xl border-2 p-2" />
+        <Text className="my-2 text-4xl font-extrabold">Welcome to the</Text>
+        <Text className="mb-4 gap-2 rounded-xl border border-gray-700 bg-gradient-to-br from-indigo-600 via-purple-600 to-orange-600 px-3 text-4xl font-extrabold">
+          Lootbox Simulator!
+        </Text>
         <p className="mb-6 max-w-md text-center text-lg">
           In this game, you'll unlock amazing loot boxes filled with various
           items. Each loot box contains a unique set of rewards. Start opening
@@ -41,6 +54,17 @@ const LootBoxOpening: React.FC<LootBoxAnimationProps> = ({
           unfolds! The more loot boxes you open, the more exciting the
           possibilities.
         </p>
+        <Text>Created by Kevin Liu</Text>
+        <Text className="text-sm text-gray-300">
+          <a
+            href="https://github.com/Kevin-Liu-01/Lootbox-Simulator"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+          >
+            View on GitHub
+          </a>
+        </Text>
       </Flex>
     );
   }
@@ -53,15 +77,11 @@ const LootBoxOpening: React.FC<LootBoxAnimationProps> = ({
     >
       <Flex align="center" justify="center" className="flex-wrap gap-4">
         {/*render a white flash that only appears for 25 milliseconds */}
-        <img
-          src="/images/backgrounds/flashinglights.png"
-          className="animate-fadeIn absolute -z-20 h-[100%] w-full rounded-full opacity-80 transition-opacity duration-[25]"
-        />
+        <FlashingLights />
+
         {/*render a spinning white circle  */}
-        <img
-          src="/images/backgrounds/flashinglights.png"
-          className="absolute -z-20 h-1/2 w-1/2 animate-spin rounded-full opacity-80 transition"
-        />
+        <SpinningLightCircle />
+
         {openedItems.map((item, index) => (
           <ItemCard item={item} index={index} />
         ))}
@@ -83,11 +103,10 @@ const LootBoxOpening: React.FC<LootBoxAnimationProps> = ({
             alt={selectedLootBox.name}
             className="absolute h-full w-full object-cover opacity-70 blur-sm"
           />
-          <img
-            src="/images/backgrounds/lightning.gif"
-            alt="Portal"
-            className={`absolute h-full w-full ${isOpening ? "animate-fadeIn" : "opacity-0"} `}
-          />
+          <BackgroundLightning isOpening={isOpening} />
+          <Particles show={openedItems.length != 0} />
+          <OpeningSparks isOpening={isOpening} />
+
           <img
             src={selectedLootBox.image}
             alt={selectedLootBox.name}
@@ -107,40 +126,16 @@ const LootBoxOpening: React.FC<LootBoxAnimationProps> = ({
           className="relative h-full w-full flex-col"
         >
           <img
-            src="/images/backgrounds/flashinglights.png"
-            className="animate-fadeIn absolute -z-20 h-[110%] w-full rounded-full opacity-50 transition-opacity duration-[25]"
-          />
-          <img
             src={selectedLootBox.backgroundImage}
             alt={selectedLootBox.name}
             className={`${isOpening ? "animate-shake" : "animate-pulse"} absolute h-full w-full object-cover opacity-50`}
           />
-          <img
-            src="/images/backgrounds/particles.webp"
-            alt="Particles"
-            className={`absolute h-full w-full transition-all ${isOpening ? "opacity-100" : "opacity-50"}`}
-          />
-          <img
-            src="/images/backgrounds/lightning.gif"
-            alt="Portal"
-            className={`absolute z-10 h-full w-full ${isOpening ? "animate-fadeIn" : "opacity-20"} `}
-          />
+          <SpeedParticles isOpening={isOpening} />
+          <BackgroundLightning isOpening={isOpening} />
+          <Particles show={openedItems.length != 0} />
+
           <Flex align="center" justify="center" className="relative">
-            <img
-              src="/images/backgrounds/portal.png"
-              alt="Portal1"
-              className={`z-5 h-72 w-72 animate-spin opacity-80`}
-            />
-            <img
-              src="/images/backgrounds/portal2.png"
-              alt="Portal2"
-              className={`absolute z-[15] h-[29rem] min-w-[29rem] animate-spin opacity-80`}
-            />
-            <img
-              src="/images/backgrounds/portal3.png"
-              alt="Portal3"
-              className={`z-8 absolute h-72 w-72 ${isOpening ? "animate-fadeIn" : "animate-spin"} `}
-            />
+            <Portal isOpening={isOpening} />
             {openedItems.length > 0 && renderItems()}
           </Flex>
         </Flex>
@@ -159,6 +154,9 @@ const LootBoxOpening: React.FC<LootBoxAnimationProps> = ({
             alt={selectedLootBox.name}
             className="z-5 absolute h-full w-full object-cover opacity-50 blur-sm"
           />
+          <BackgroundLightning2 isOpening={shakeEffect} />
+          <Particles show={openedItems.length != 0} />
+
           {openedItems.length > 0 ? (
             renderItems()
           ) : (

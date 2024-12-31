@@ -28,8 +28,8 @@ export default {
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
         wiggle: {
-          "0%, 100%": { transform: "rotate(-3deg)" },
-          "50%": { transform: "rotate(3deg)" },
+          "0%, 100%": { transform: "rotate(-6deg)" },
+          "50%": { transform: "rotate(6deg)" },
         },
 
         shake: {
