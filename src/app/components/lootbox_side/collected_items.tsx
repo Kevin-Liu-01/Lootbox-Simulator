@@ -32,6 +32,7 @@ export default function CollectedItems({
 
   return (
     <div className="mt-4 h-72 w-full overflow-y-auto rounded-xl bg-gray-800 p-4 shadow-lg">
+      {/*render a white flash that only appears for 500 milliseconds */}
       <Flex className="items-center justify-between">
         <h2 className="text-2xl font-semibold text-white">Collected Items</h2>
         {/* Column toggle */}
@@ -65,8 +66,8 @@ export default function CollectedItems({
               .replace("from-", "")}`}
           >
             {/* Glow Effect */}
-            <div className="absolute inset-0 rounded-lg opacity-0 transition-opacity duration-300 hover:opacity-100">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent blur-lg"></div>
+            <div className="absolute inset-0 w-full rounded-lg opacity-0 transition-opacity duration-300 hover:opacity-100">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent blur-lg"></div>
             </div>
 
             {/* Item Image */}
@@ -79,7 +80,7 @@ export default function CollectedItems({
             </div>
 
             <div
-              className={`absolute right-1 top-1 rounded-full px-3 py-1 text-[0.5rem] font-bold text-white shadow-lg ${
+              className={`absolute right-1 top-1 rounded-full border border-white/40 px-3 py-1 text-[0.5rem] font-bold text-white shadow-lg ${
                 rarityColors[item.rarity]
               }`}
             >

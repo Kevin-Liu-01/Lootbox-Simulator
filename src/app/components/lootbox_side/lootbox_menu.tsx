@@ -59,12 +59,17 @@ export default function LootBoxMenu({
             <Flex
               justify="center"
               align="center"
-              className="rounded-lg bg-black/20 p-3"
+              className="relative overflow-hidden rounded-lg bg-black/20 p-3"
             >
+              <img
+                src={box.backgroundImage}
+                alt={box.name}
+                className="z-5 absolute h-full w-full object-cover opacity-50 blur-[1px]"
+              />
               <img
                 src={box.image}
                 alt={box.name}
-                className="mb-2 h-24 w-full rounded-lg object-contain"
+                className="z-10 mb-2 h-24 w-full rounded-lg object-contain"
               />
             </Flex>
             <h3 className="pt-2 text-lg font-bold">{box.name}</h3>

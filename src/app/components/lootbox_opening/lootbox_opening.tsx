@@ -1,7 +1,7 @@
 // lootBoxAnimation.tsx
 import React, { useState } from "react";
-import { Flex, Text } from "@radix-ui/themes";
-import { StarIcon } from "lucide-react";
+import { Flex } from "@radix-ui/themes";
+import ItemCard from "~/app/components/lootbox_opening/item_card";
 
 export type Rarity =
   | "legendary"
@@ -55,58 +55,14 @@ const LootBoxOpening: React.FC<LootBoxAnimationProps> = ({
   const renderItems = () => (
     <div className="absolute z-10 mt-6 flex w-[90%] max-w-4xl flex-wrap justify-center gap-4">
       {openedItems.map((item, index) => (
-        <div
-          key={index}
-          className={`animate-fadeIn relative flex flex-col items-center rounded-2xl p-3 shadow-2xl backdrop-blur-md transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_5px_rgba(255,255,255,0.4)] ${
-            rarityColors[item.rarity]
-          } border border-white/10 bg-gradient-to-t from-gray-900/60 to-black/70`}
-        >
-          <div
-            className={`absolute inset-0 -z-10 animate-pulse rounded-2xl opacity-20 ${
-              rarityColors[item.rarity]
-            }`}
-          />
-
+        <>
+          {/*render a white flash that only appears for 25 milliseconds */}
           <img
-            src={item.image}
-            alt={item.name}
-            className="h-24 w-24 rounded-md bg-gradient-to-br from-gray-800 to-black object-cover shadow-lg transition-transform duration-300 hover:scale-110"
+            src="/images/backgrounds/flashinglights.png"
+            className="animate-fadeIn absolute inset-0 -z-20 h-[110%] w-full rounded-full opacity-80 transition-opacity duration-[25]"
           />
-
-          <p className="text-md mt-4 text-center font-bold tracking-wide text-white drop-shadow-md">
-            {item.name}
-          </p>
-
-          <div className="mt-3 flex justify-center space-x-2">
-            {[...Array(5)].map((_, i) => (
-              <StarIcon
-                key={i}
-                className={`h-5 w-5 ${
-                  i <
-                  (item.rarity === "legendary"
-                    ? 5
-                    : item.rarity === "epic"
-                      ? 4
-                      : item.rarity === "super rare"
-                        ? 3
-                        : item.rarity === "rare"
-                          ? 2
-                          : 1)
-                    ? "text-yellow-400 drop-shadow-[0_0_5px_rgba(255,255,0,0.8)]"
-                    : "text-gray-800"
-                }`}
-              />
-            ))}
-          </div>
-
-          <div
-            className={`absolute right-2 top-2 rounded-full px-3 py-1 text-xs font-bold text-white shadow-md ${
-              rarityColors[item.rarity]
-            }`}
-          >
-            {item.rarity.toUpperCase()}
-          </div>
-        </div>
+          <ItemCard item={item} index={index} />
+        </>
       ))}
     </div>
   );
@@ -144,6 +100,10 @@ const LootBoxOpening: React.FC<LootBoxAnimationProps> = ({
           className="relative h-full w-full flex-col"
         >
           <img
+            src="/images/backgrounds/flashinglights.png"
+            className="animate-fadeIn absolute inset-0 -z-20 h-[110%] w-full rounded-full opacity-80 transition-opacity duration-[25]"
+          />
+          <img
             src={selectedLootBox.backgroundImage}
             alt={selectedLootBox.name}
             className="absolute h-full w-full animate-pulse object-cover opacity-70"
@@ -173,44 +133,7 @@ const LootBoxOpening: React.FC<LootBoxAnimationProps> = ({
             className="z-5 absolute h-full w-full object-cover opacity-50 blur-sm"
           />
           {openedItems.length > 0 ? (
-            <Flex
-              className={`z-10 flex-col items-center rounded-lg p-3 ${rarityColors[openedItems[0]?.rarity]} border border-white/30 bg-opacity-90 shadow-lg`}
-            >
-              <img
-                src={openedItems[0]?.image}
-                alt={openedItems[0]?.name}
-                className="mx-auto mb-2 h-16 w-16 rounded-md bg-black/30 object-cover"
-              />
-              <Text className="mx-auto text-center font-semibold">
-                {openedItems[0]?.name}
-              </Text>
-              <Flex
-                justify="center"
-                align="center"
-                className={`z-20 mt-2 space-x-0.5 rounded-full bg-black/40 p-1`}
-              >
-                {[...Array(5)].map((_, i) => (
-                  <StarIcon
-                    key={i}
-                    className={`size-4 rounded-full ${
-                      i <
-                      (openedItems[0]?.rarity === "legendary"
-                        ? 5
-                        : openedItems[0]?.rarity === "epic"
-                          ? 4
-                          : openedItems[0]?.rarity === "super rare"
-                            ? 3
-                            : openedItems[0]?.rarity === "rare"
-                              ? 2
-                              : 1)
-                        ? "text-yellow-500"
-                        : "text-gray-500"
-                    }`}
-                  />
-                ))}
-              </Flex>
-              {/* <Text className="capitalize italic"> {item.rarity}</Text> */}
-            </Flex>
+            renderItems()
           ) : (
             <Flex
               justify="center"
