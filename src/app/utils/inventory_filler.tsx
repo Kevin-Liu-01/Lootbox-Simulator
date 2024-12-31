@@ -28,7 +28,7 @@ export default function InventoryFiller({
       {placeholders.map((_, index) => (
         <div
           key={`placeholder-${index}`}
-          className={`relative ${height} flex items-center justify-center rounded-lg bg-gradient-to-r from-gray-700 via-gray-700 to-gray-700 shadow-lg`}
+          className={`relative min-h-full ${height} flex items-center justify-center rounded-lg bg-gradient-to-r from-gray-700 via-gray-700 to-gray-700 shadow-lg`}
         >
           <span className="absolute select-none text-sm text-gray-500">
             Empty Slot

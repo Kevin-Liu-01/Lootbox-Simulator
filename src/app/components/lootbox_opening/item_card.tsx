@@ -1,16 +1,14 @@
-import { useState, useEffect } from "react";
+import { Flex } from "@radix-ui/themes";
 import { StarIcon } from "lucide-react";
+import { rarityColors, Rarity } from "~/app/utils/types";
 
-const rarityColors: Record<Rarity, string> = {
-  common: "bg-gradient-to-r from-gray-600 to-gray-500",
-  rare: "bg-gradient-to-r from-blue-600 to-blue-500",
-  "super rare": "bg-gradient-to-r from-purple-600 to-purple-500",
-  epic: "bg-gradient-to-r from-pink-600 to-pink-500",
-  mythical: "bg-gradient-to-r from-red-600 to-red-500",
-  legendary: "bg-gradient-to-r from-yellow-600 to-yellow-500",
-};
-
-export default function ItemCard({ item, index }: { item: any; index: any }) {
+export default function ItemCard({
+  item,
+  index,
+}: {
+  item: { name: string; rarity: Rarity; image: string };
+  index: number;
+}) {
   // const [flash, setFlash] = useState(true); // Flash starts as true
 
   // useEffect(() => {
@@ -20,8 +18,8 @@ export default function ItemCard({ item, index }: { item: any; index: any }) {
 
   return (
     <>
-      <div
-        key={"itemcard" + index}
+      <Flex
+        key={"itemcard" + item + index}
         className={`animate-fadeIn relative flex flex-col items-center rounded-2xl p-3 shadow-2xl backdrop-blur-md transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_5px_rgba(255,255,255,0.4)] ${
           rarityColors[item.rarity]
         } border border-white/10 bg-gradient-to-t from-gray-900/60 to-black/70`}
@@ -32,9 +30,9 @@ export default function ItemCard({ item, index }: { item: any; index: any }) {
           }`}
         />
         <img
-          src={item.image}
+          src={item?.image}
           alt={item.name}
-          className="h-24 w-24 rounded-md bg-gradient-to-br from-gray-800 to-black object-cover shadow-lg transition-transform duration-300 hover:scale-110"
+          className="h-32 w-32 rounded-md bg-gradient-to-br from-gray-800/40 to-black/40 object-contain p-2 shadow-lg"
         />
         <p className="text-md mt-4 text-center font-bold tracking-wide text-white drop-shadow-md">
           {item.name}
@@ -48,7 +46,7 @@ export default function ItemCard({ item, index }: { item: any; index: any }) {
                 (item.rarity === "legendary"
                   ? 5
                   : item.rarity === "mythical"
-                    ? 4 // Mythical gets 4.5 stars
+                    ? 4
                     : item.rarity === "epic"
                       ? 3
                       : item.rarity === "super rare"
@@ -69,7 +67,7 @@ export default function ItemCard({ item, index }: { item: any; index: any }) {
         >
           {item.rarity.toUpperCase()}
         </div>
-      </div>
+      </Flex>
     </>
   );
 }

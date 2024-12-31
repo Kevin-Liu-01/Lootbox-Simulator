@@ -31,6 +31,7 @@ export default {
           "0%, 100%": { transform: "rotate(-3deg)" },
           "50%": { transform: "rotate(3deg)" },
         },
+
         shake: {
           "10%, 90%": {
             transform: "translate3d(-1px, 0, 0)",
@@ -52,6 +53,7 @@ export default {
         lootboxExplode: "lootboxExplode 1s ease-out forwards",
         fadeIn: "fadeIn 1s ease-in-out",
         wiggle: "wiggle 200ms ease-in-out",
+        wiggleInfinite: "wiggle 200ms cubic-bezier(.36,.07,.19,.97) infinite",
         shake: "shake 0.82s cubic-bezier(.36,.07,.19,.97) both",
       },
     },

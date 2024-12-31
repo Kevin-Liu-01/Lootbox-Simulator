@@ -1,60 +1,54 @@
-import React from "react";
-import { Box, Flex, Text } from "@radix-ui/themes";
+import React, { useState } from "react";
+import { LootBox, rarityColors } from "~/app/utils/types";
+import { Flex, Text } from "@radix-ui/themes";
+import { FileBoxIcon } from "lucide-react";
 
-type Item = {
-  id: string;
-  name: string;
-  image: string;
-  rarity: string;
-  chance: number;
-};
-
-type LootBoxType = "crate" | "starrdrop" | "skin" | "summon";
-
-type LootBox = {
-  id: string;
-  name: string;
-  game: string;
-  type: LootBoxType;
-  background: string;
-  image: string;
-  drops: Item[];
-};
-
-// Define available loot boxes
 export default function LootBoxMenu({
   availableLootBoxes,
   addLootBoxToInventory,
+  handleToggleView,
 }: {
   availableLootBoxes: LootBox[];
-  addLootBoxToInventory: (box: LootBox) => void;
+  addLootBoxToInventory: (box: LootBox, count: number) => void;
+  handleToggleView: () => void;
 }) {
+  // Track quantities for each loot box
+  const [quantities, setQuantities] = useState(
+    Object.fromEntries(availableLootBoxes.map((box) => [box.id, 1])),
+  );
+
+  const incrementQuantity = (id: string) => {
+    setQuantities((prev: any) => ({
+      ...prev,
+      [id]: Math.min(prev[id] + 1, 20),
+    }));
+  };
+
+  const decrementQuantity = (id: string) => {
+    setQuantities((prev: any) => ({
+      ...prev,
+      [id]: Math.max(prev[id] - 1, 1),
+    }));
+  };
+
+  const addHandler = (box: LootBox, count: number) => {
+    addLootBoxToInventory(box, count);
+    handleToggleView();
+  };
+
   return (
-    <Flex className="flex-col p-4">
+    <Flex className="w-full flex-col p-3">
       <Flex className="mb-4">
-        <h2 className="text-2xl font-bold">Available Lootboxes</h2>
-        {/* Column toggle */}
-        {/* <div className="mb-4 ml-auto">
-          <label htmlFor="column-toggle" className="mr-2">
-            Columns:
-          </label>
-          <select
-            id="column-toggle"
-            value={columns}
-            onChange={handleColumnToggle}
-            className="rounded border bg-gray-800 p-2"
-          >
-            <option value={"grid-cols-2"}>2 Columns</option>
-            <option value={"grid-cols-3"}>3 Columns</option>
-            <option value={"grid-cols-4"}>4 Columns</option>
-          </select>
-        </div> */}
+        <Flex align="center" className="gap-3 text-2xl font-bold">
+          <FileBoxIcon size={24} />
+          Available Lootboxes
+        </Flex>
       </Flex>
-      <div className="grid w-full grid-cols-2 gap-4 md:grid-cols-3">
+      <div className="grid w-full grid-cols-2 gap-4 overflow-y-auto rounded-md bg-gray-900 p-3 md:grid-cols-3">
         {availableLootBoxes.map((box) => (
           <Flex
             key={box.id}
-            className={`cursor-pointer flex-col rounded-lg p-4 shadow-lg ${box.background}`}
+            className={`cursor-pointer flex-col rounded-xl p-4 shadow-lg ${box.background}`}
           >
             <Flex
               justify="center"
@@ -74,21 +68,61 @@ export default function LootBoxMenu({
             </Flex>
             <h3 className="pt-2 text-lg font-bold">{box.name}</h3>
             <p className="text-sm capitalize">Type: {box.type}</p>
-            {/* <p className="text-sm">Potential Drops:</p> */}
-            <ul className="mt-2 h-20 overflow-y-auto rounded-lg bg-black/10 p-2 text-sm shadow-inner">
-              {box.drops.map((drop, index) => (
-                <li key={index} className="capitalize">
-                  <Text className="font-semibold">{drop.name}</Text> (
-                  {drop.rarity} rarity): {drop.chance.toFixed(1)}%
-                </li>
-              ))}
-            </ul>
-            <button
-              className="mt-3 w-full rounded bg-black/30 px-4 py-2 text-white transition-all hover:bg-black/50"
-              onClick={() => addLootBoxToInventory(box)}
-            >
-              Add to Inventory
-            </button>
+            {/* Potential Drops */}
+            <div className="mb-4 text-left">
+              <h3 className="text-lg font-semibold text-gray-200">
+                Potential Drops:
+              </h3>
+              <ul className="mt-2 max-h-[8.5rem] space-y-1 overflow-y-auto rounded-lg bg-gray-900/80 p-1 text-sm text-gray-300">
+                {box.drops.length > 0 ? (
+                  box.drops.map((item) => (
+                    <li
+                      key={item.name + item.id}
+                      className={`flex items-center gap-2 rounded-md ${rarityColors[item.rarity]} p-2 shadow`}
+                    >
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="h-6 w-6 rounded-full object-cover"
+                      />
+                      {item.name}
+                      <Text className="ml-auto text-xs font-semibold text-white/80">
+                        {item.chance}%
+                      </Text>
+                    </li>
+                  ))
+                ) : (
+                  <li className="italic text-gray-400">No drops available.</li>
+                )}
+              </ul>
+            </div>
+            <Flex justify="center" align="center" className="mt-3 gap-2">
+              <Flex
+                justify="center"
+                align="center"
+                className="h-full gap-3 rounded-lg bg-black/30 p-1"
+              >
+                <button
+                  className="rounded bg-black/30 px-2 py-1 text-white transition-all hover:bg-black/50"
+                  onClick={() => decrementQuantity(box.id)}
+                >
+                  -
+                </button>
+                <Text>{quantities[box.id]}</Text>
+                <button
+                  className="rounded bg-black/30 px-2 py-1 text-white transition-all hover:bg-black/50"
+                  onClick={() => incrementQuantity(box.id)}
+                >
+                  +
+                </button>
+              </Flex>
+              <button
+                className="w-full rounded-lg bg-black/30 px-4 py-2 text-white transition-all hover:bg-black/50"
+                onClick={() => addHandler(box, quantities[box.id] ?? 0)}
+              >
+                Add {quantities[box.id]} Boxes
+              </button>
+            </Flex>
           </Flex>
         ))}
       </div>

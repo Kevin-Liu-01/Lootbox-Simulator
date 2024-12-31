@@ -1,46 +1,16 @@
 // lootBoxAnimation.tsx
 import React, { useState } from "react";
 import { Flex } from "@radix-ui/themes";
+import { LootBox, Item } from "~/app/utils/types";
 import ItemCard from "~/app/components/lootbox_opening/item_card";
-
-export type Rarity =
-  | "legendary"
-  | "mythical"
-  | "epic"
-  | "super rare"
-  | "rare"
-  | "common";
-
-export interface LootBoxItem {
-  name: string;
-  image: string;
-  rarity: Rarity;
-}
-
-export interface LootBox {
-  type: "crate" | "skin" | "summon" | "starrdrop";
-  name: string;
-  background: string;
-  backgroundImage: string;
-  image: string;
-}
 
 interface LootBoxAnimationProps {
   selectedLootBox: LootBox | null;
-  openedItems: LootBoxItem[];
+  openedItems: Item[];
   isOpening?: boolean;
   starrDropStage?: number;
   handleStarrDropClick?: () => void;
 }
-
-const rarityColors: Record<Rarity, string> = {
-  common: "bg-gradient-to-r from-gray-600 to-gray-500",
-  rare: "bg-gradient-to-r from-blue-600 to-blue-500",
-  "super rare": "bg-gradient-to-r from-purple-600 to-purple-500",
-  epic: "bg-gradient-to-r from-pink-600 to-pink-500",
-  mythical: "bg-gradient-to-r from-red-600 to-red-500",
-  legendary: "bg-gradient-to-r from-yellow-600 to-yellow-500",
-};
 
 const LootBoxOpening: React.FC<LootBoxAnimationProps> = ({
   selectedLootBox,
@@ -49,22 +19,54 @@ const LootBoxOpening: React.FC<LootBoxAnimationProps> = ({
   starrDropStage = 1,
   handleStarrDropClick,
 }) => {
-  if (!selectedLootBox) return null;
   const [shakeEffect, setShakeEffect] = useState(true);
 
+  if (!selectedLootBox) {
+    return (
+      <Flex
+        align="center"
+        justify="center"
+        className="h-full w-full flex-col rounded-2xl border-2 border-dashed border-indigo-600 bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-950 p-8 text-center"
+      >
+        <h1 className="mb-4 text-4xl font-extrabold">
+          Welcome to the Lootbox Simulator!
+        </h1>
+        <p className="mb-6 max-w-md text-center text-lg">
+          In this game, you'll unlock amazing loot boxes filled with various
+          items. Each loot box contains a unique set of rewards. Start opening
+          loot boxes to collect rare items and fill your inventory!
+        </p>
+        <p className="text-md mb-6 text-center text-gray-300">
+          To get started, select a loot box to open, and watch as the magic
+          unfolds! The more loot boxes you open, the more exciting the
+          possibilities.
+        </p>
+      </Flex>
+    );
+  }
+
   const renderItems = () => (
-    <div className="absolute z-10 mt-6 flex w-[90%] max-w-4xl flex-wrap justify-center gap-4">
-      {openedItems.map((item, index) => (
-        <>
-          {/*render a white flash that only appears for 25 milliseconds */}
-          <img
-            src="/images/backgrounds/flashinglights.png"
-            className="animate-fadeIn absolute inset-0 -z-20 h-[110%] w-full rounded-full opacity-80 transition-opacity duration-[25]"
-          />
+    <Flex
+      align="center"
+      justify="center"
+      className="absolute z-10 h-full w-[90%] max-w-4xl overflow-y-scroll"
+    >
+      <Flex align="center" justify="center" className="flex-wrap gap-4">
+        {/*render a white flash that only appears for 25 milliseconds */}
+        <img
+          src="/images/backgrounds/flashinglights.png"
+          className="animate-fadeIn absolute -z-20 h-[100%] w-full rounded-full opacity-80 transition-opacity duration-[25]"
+        />
+        {/*render a spinning white circle  */}
+        <img
+          src="/images/backgrounds/flashinglights.png"
+          className="absolute -z-20 h-1/2 w-1/2 animate-spin rounded-full opacity-80 transition"
+        />
+        {openedItems.map((item, index) => (
           <ItemCard item={item} index={index} />
-        </>
-      ))}
-    </div>
+        ))}
+      </Flex>
+    </Flex>
   );
 
   switch (selectedLootBox.type) {
@@ -74,7 +76,7 @@ const LootBoxOpening: React.FC<LootBoxAnimationProps> = ({
         <Flex
           align="center"
           justify="center"
-          className={`relative h-full w-full flex-col ${selectedLootBox.background}`}
+          className={`relative h-full w-full flex-col ${isOpening ? "animate-shake" : ""} ${selectedLootBox.background}`}
         >
           <img
             src={selectedLootBox.backgroundImage}
@@ -82,10 +84,15 @@ const LootBoxOpening: React.FC<LootBoxAnimationProps> = ({
             className="absolute h-full w-full object-cover opacity-70 blur-sm"
           />
           <img
+            src="/images/backgrounds/lightning.gif"
+            alt="Portal"
+            className={`absolute h-full w-full ${isOpening ? "animate-fadeIn" : "opacity-0"} `}
+          />
+          <img
             src={selectedLootBox.image}
             alt={selectedLootBox.name}
             className={`z-10 h-72 w-72 transition-transform duration-[1000] ease-in-out ${
-              isOpening ? "animate-wiggle" : "hover:scale-105"
+              isOpening ? "animate-wiggleInfinite" : "hover:scale-105"
             }`}
           />
           {openedItems.length > 0 && renderItems()}
@@ -101,18 +108,38 @@ const LootBoxOpening: React.FC<LootBoxAnimationProps> = ({
         >
           <img
             src="/images/backgrounds/flashinglights.png"
-            className="animate-fadeIn absolute inset-0 -z-20 h-[110%] w-full rounded-full opacity-80 transition-opacity duration-[25]"
+            className="animate-fadeIn absolute -z-20 h-[110%] w-full rounded-full opacity-50 transition-opacity duration-[25]"
           />
           <img
             src={selectedLootBox.backgroundImage}
             alt={selectedLootBox.name}
-            className="absolute h-full w-full animate-pulse object-cover opacity-70"
+            className={`${isOpening ? "animate-shake" : "animate-pulse"} absolute h-full w-full object-cover opacity-50`}
+          />
+          <img
+            src="/images/backgrounds/particles.webp"
+            alt="Particles"
+            className={`absolute h-full w-full transition-all ${isOpening ? "opacity-100" : "opacity-50"}`}
+          />
+          <img
+            src="/images/backgrounds/lightning.gif"
+            alt="Portal"
+            className={`absolute z-10 h-full w-full ${isOpening ? "animate-fadeIn" : "opacity-20"} `}
           />
           <Flex align="center" justify="center" className="relative">
             <img
               src="/images/backgrounds/portal.png"
-              alt="Portal"
-              className="mb-4 h-72 w-72 animate-spin opacity-80"
+              alt="Portal1"
+              className={`z-5 h-72 w-72 animate-spin opacity-80`}
+            />
+            <img
+              src="/images/backgrounds/portal2.png"
+              alt="Portal2"
+              className={`absolute z-[15] h-[29rem] min-w-[29rem] animate-spin opacity-80`}
+            />
+            <img
+              src="/images/backgrounds/portal3.png"
+              alt="Portal3"
+              className={`z-8 absolute h-72 w-72 ${isOpening ? "animate-fadeIn" : "animate-spin"} `}
             />
             {openedItems.length > 0 && renderItems()}
           </Flex>
@@ -124,7 +151,7 @@ const LootBoxOpening: React.FC<LootBoxAnimationProps> = ({
         <Flex
           align="center"
           justify="center"
-          className={`h-full flex-col starrdrop-stage-${starrDropStage}`}
+          className={`h-full flex-col starrdrop-stage-${starrDropStage} ${shakeEffect ? "animate-shake" : ""}`}
           onClick={handleStarrDropClick}
         >
           <img
