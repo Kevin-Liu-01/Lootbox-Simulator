@@ -17,7 +17,7 @@ export default function InventoryFiller({
   const numColumns = Number(columns.slice(-1)); // Extract the number of columns
   const totalEntries = entries.length + adjustVal; // Ensure we meet the minimum entries
   const remainder = totalEntries % numColumns; // Calculate entries in the last row
-  const placeholders = numColumns - remainder; // Fill remaining slots in the row
+  const placeholders = numColumns - remainder + numColumns; // Fill remaining slots in the row
 
   return (
     <>
@@ -47,13 +47,13 @@ export default function InventoryFiller({
               {[...Array(3)].map((_, dotIndex) => (
                 <div
                   key={`dot-${dotIndex}`}
-                  className={`h-2 w-2 animate-pulse rounded-full bg-indigo-500/70`}
+                  className={`size-1 animate-pulse rounded-full bg-indigo-500/70 sm:size-2`}
                   style={{ animationDelay: `${dotIndex * 200}ms` }}
                 />
               ))}
             </Flex>
             {/* Empty Slot Text */}
-            <span className="select-none text-sm text-gray-400/40">
+            <span className="select-none px-3 text-center text-xs text-gray-400/40 sm:text-sm">
               Empty Slot
             </span>
           </Flex>

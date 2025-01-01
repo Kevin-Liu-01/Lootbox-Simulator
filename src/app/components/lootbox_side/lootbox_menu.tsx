@@ -63,7 +63,7 @@ export default function LootBoxMenu({
               <img
                 src={box.image}
                 alt={box.name}
-                className="z-10 mb-2 h-24 w-full rounded-lg object-contain"
+                className="z-10 h-24 w-full rounded-lg object-contain"
               />
             </Flex>
             <h3 className="pt-2 text-lg font-bold">{box.name}</h3>

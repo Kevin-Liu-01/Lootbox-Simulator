@@ -1,12 +1,6 @@
 import { Flex } from "@radix-ui/themes";
 import React, { useState } from "react";
-import {
-  ArchiveIcon,
-  BoxIcon,
-  CodeSquareIcon,
-  PackageIcon,
-  PackageOpenIcon,
-} from "lucide-react";
+import { BoxIcon, PackageIcon, PackageOpenIcon } from "lucide-react";
 import useLocalStorage from "~/app/utils/useLocalStorage";
 import InventoryFiller from "~/app/utils/inventory_filler";
 import AddLootBoxButton from "./addLootBoxButton";
@@ -27,7 +21,7 @@ export default function LootBoxInventory({
 }) {
   const [columns, setColumns] = useLocalStorage(
     "inventory_columns",
-    "grid-cols-4",
+    "grid-cols-3",
   ); // Default 4 columns
   const [filter, setFilter] = useState<string | null>(null);
 
@@ -64,38 +58,56 @@ export default function LootBoxInventory({
   return (
     <Flex className="h-full w-full flex-col bg-gray-800 p-3 text-gray-100">
       <Flex className="mb-3 flex-col gap-3">
-        <Flex>
-          <Flex align="center" className="gap-3 text-2xl font-bold">
+        <Flex
+          align="center"
+          className="flex-col text-sm sm:flex-row sm:text-base"
+        >
+          <Flex align="center" className="gap-3 text-lg font-bold sm:text-2xl">
             <BoxIcon size={24} />
             Lootbox Inventory ({lootBoxInventory.length})
           </Flex>
           {/* Column toggle */}
-          <div className="ml-auto flex items-center">
+          <div className="mt-2 flex items-center sm:ml-auto sm:mt-0">
             <label
               htmlFor="column-toggle"
-              className="mr-2 text-sm font-medium text-gray-300"
+              className="mr-2 font-medium text-gray-300"
             >
               Columns:
             </label>
+            {/* Column Toggle Select */}
             <select
               id="column-toggle"
               value={columns}
               onChange={handleColumnToggle}
-              className="rounded-lg border border-gray-600 bg-gray-700 p-2 text-gray-300 shadow focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="hidden rounded-lg border border-gray-600 bg-gray-700 p-2 text-gray-300 shadow focus:outline-none focus:ring-2 focus:ring-blue-500 sm:inline"
             >
               <option value={"grid-cols-3"}>3 Columns</option>
               <option value={"grid-cols-4"}>4 Columns</option>
               <option value={"grid-cols-5"}>5 Columns</option>
             </select>
+            {/* Column toggle for mobile */}
+            <select
+              id="column-toggle"
+              value={columns}
+              onChange={handleColumnToggle}
+              className="inline rounded-lg border border-gray-600 bg-gray-700 p-2 text-gray-300 shadow focus:outline-none focus:ring-2 focus:ring-blue-500 sm:hidden"
+            >
+              <option value={"grid-cols-1"}>1 Columns</option>
+              <option value={"grid-cols-2"}>2 Columns</option>
+              <option value={"grid-cols-3"}>3 Columns</option>
+            </select>
           </div>
         </Flex>
 
         {/* Filter Section */}
-        <Flex className="w-full gap-2 overflow-x-auto rounded-lg bg-gray-900 p-2">
+        <Flex
+          justify="center"
+          className="w-full flex-wrap gap-2 overflow-x-auto rounded-lg bg-gray-900 p-2 text-[0.6rem] font-semibold sm:text-sm"
+        >
           {lootBoxCounts.map(({ type, count }) => (
             <button
               key={type}
-              className={`text-nowrap rounded-md px-4 py-2 text-sm font-semibold text-gray-200 transition ${
+              className={`text-nowrap rounded-md px-2 py-1 text-gray-200 transition sm:px-4 sm:py-2 ${
                 filter === type
                   ? `${
                       availableLootBoxes.find((box) => box.name === type)
@@ -113,7 +125,7 @@ export default function LootBoxInventory({
 
       {/* Lootbox Inventory Grid */}
       <div
-        className={`grid ${columns} h-full gap-3 overflow-y-auto rounded-md bg-gray-900 p-3`}
+        className={`grid ${columns} h-full gap-2 overflow-y-auto rounded-md bg-gray-900 p-2 sm:gap-3 sm:p-3`}
       >
         {/* Add Specific Lootbox Button, then Add Random Lootbox Button */}
         <AddLootBoxButton
@@ -129,13 +141,13 @@ export default function LootBoxInventory({
           .map((box) => (
             <Flex
               key={box.id}
-              className={`relative flex-col rounded-xl p-3 shadow-[0_5px_15px_rgba(0,0,0,0.5)] transition-transform duration-300 hover:rotate-1 hover:scale-[1.02] ${box.background} border-2 border-transparent bg-gradient-to-br`}
+              className={`relative flex-col rounded-xl p-2 shadow-[0_5px_15px_rgba(0,0,0,0.5)] transition-transform duration-300 hover:rotate-1 hover:scale-[1.02] sm:p-3 ${box.background} border-2 border-transparent bg-gradient-to-br`}
             >
               {/* Glowing Image Container */}
               <Flex
                 justify="center"
                 align="center"
-                className="relative h-full overflow-hidden rounded-md bg-black/30 p-3 shadow-inner"
+                className="relative overflow-hidden rounded-md bg-black/30 p-3 shadow-inner"
               >
                 <img
                   src={box.backgroundImage}
@@ -146,12 +158,12 @@ export default function LootBoxInventory({
                 <img
                   src={box.image}
                   alt={box.name}
-                  className="z-10 mb-2 h-24 w-full rounded-lg object-contain transition-transform duration-300 hover:scale-110"
+                  className="z-10 h-20 w-full rounded-lg object-contain transition-transform duration-300 hover:scale-110 sm:h-24"
                 />
               </Flex>
 
               {/* Box Title */}
-              <h3 className="text-md mt-3 font-extrabold tracking-wide text-white">
+              <h3 className="sm:text-md mt-1 text-sm font-extrabold tracking-wide text-white sm:mt-3">
                 {box.name}
               </h3>
 
@@ -159,20 +171,20 @@ export default function LootBoxInventory({
               <p className="mb-3 text-xs italic text-gray-200">{box.game}</p>
 
               {/* Open and Delete Buttons */}
-              <Flex className="mt-auto w-full flex-wrap gap-2">
+              <Flex className="mt-auto w-full flex-row gap-2 sm:flex-col sm:flex-wrap">
                 <button
                   onClick={() => handleOpenLootBox(box)}
-                  className="flex w-full items-center justify-center rounded-md bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-2 text-xs font-semibold text-white shadow-[0_0_10px_2px_rgba(0,200,255,0.5)] transition-transform hover:scale-105 hover:from-blue-500 hover:to-blue-600"
+                  className="flex w-full items-center justify-center rounded-md bg-gradient-to-r from-blue-600 to-blue-700 py-2 text-xs font-semibold text-white shadow-[0_0_10px_2px_rgba(0,200,255,0.5)] transition-transform hover:scale-105 hover:from-blue-500 hover:to-blue-600 sm:px-3"
                 >
-                  <PackageOpenIcon size={16} className="mr-1" />
-                  Open
+                  <PackageOpenIcon size={16} className="sm:mr-1" />
+                  <span className="hidden sm:inline">Open</span>
                 </button>
                 <button
                   onClick={() => handleDeleteLootBox(box.id)}
-                  className="flex w-full items-center justify-center rounded-md bg-gradient-to-r from-red-600 to-red-700 px-3 py-2 text-xs font-semibold text-white shadow-[0_0_10px_2px_rgba(255,50,50,0.5)] transition-transform hover:scale-105 hover:from-red-500 hover:to-red-600"
+                  className="flex w-full items-center justify-center rounded-md bg-gradient-to-r from-red-600 to-red-700 py-2 text-xs font-semibold text-white shadow-[0_0_10px_2px_rgba(255,50,50,0.5)] transition-transform hover:scale-105 hover:from-red-500 hover:to-red-600 sm:px-3"
                 >
-                  <PackageIcon size={16} className="mr-1" />
-                  Delete
+                  <PackageIcon size={16} className="sm:mr-1" />
+                  <span className="hidden sm:inline">Delete</span>
                 </button>
               </Flex>
             </Flex>

@@ -1,4 +1,4 @@
-import { Flex } from "@radix-ui/themes";
+import { Box, Flex } from "@radix-ui/themes";
 import { LootBox } from "~/app/utils/types";
 
 const AddLootBoxButton = ({
@@ -15,24 +15,22 @@ const AddLootBoxButton = ({
     : null;
 
   const SkeletonCard = () => (
-    <Flex className="z-5 h-full w-full select-none flex-col rounded-lg border border-transparent bg-gradient-to-br from-gray-700 to-gray-800 p-3 text-transparent opacity-40">
+    <Flex className="z-5 h-full w-full select-none flex-col rounded-lg border border-transparent bg-gradient-to-br from-gray-700 to-gray-800 p-2 text-transparent opacity-40 sm:p-3">
       {/* Glowing Image Placeholder */}
-      <div className="mb-2 h-32 w-full animate-pulse rounded-md bg-gray-600"></div>
+      <Box className="mb-2 w-full animate-pulse rounded-md bg-gray-600 p-3">
+        <Box className="h-20 sm:h-24"></Box>
+      </Box>
       {/* Title and Game Name Placeholder */}
-      <h3 className="mt-1 w-3/4 animate-pulse rounded-md bg-gray-600 text-sm font-extrabold tracking-wide">
-        A
-      </h3>
-      <p className="mb-3 mt-2 w-1/2 animate-pulse rounded-md bg-gray-500 text-xs">
-        A
-      </p>
+      <Box className="mt-1 h-[0.75rem] w-3/4 animate-pulse rounded-md bg-gray-600 font-extrabold tracking-wide"></Box>
+      <Box className="mb-3 mt-2 h-[0.75rem] w-1/2 animate-pulse rounded-md bg-gray-500"></Box>
       {/* Buttons */}
-      <Flex className="mt-auto w-full flex-wrap gap-2">
-        <div className="w-full animate-pulse rounded-md bg-gray-600 px-4 py-2 text-xs font-semibold">
+      <Flex className="mt-auto w-full flex-row gap-2 sm:flex-col sm:flex-wrap">
+        <Box className="w-full animate-pulse rounded-md bg-gray-600 px-3 py-2 text-xs font-semibold">
           A
-        </div>
-        <div className="w-full animate-pulse rounded-md bg-gray-600 px-4 py-2 text-xs font-semibold">
+        </Box>
+        <Box className="w-full animate-pulse rounded-md bg-gray-600 px-3 py-2 text-xs font-semibold">
           A
-        </div>
+        </Box>
       </Flex>
     </Flex>
   );

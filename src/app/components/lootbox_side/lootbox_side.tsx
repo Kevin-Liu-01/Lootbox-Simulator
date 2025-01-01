@@ -47,47 +47,51 @@ export default function LootBoxSide({
   };
 
   return (
-    <Flex className="h-screen w-full flex-col overflow-y-auto p-4">
-      <Flex>
+    <Flex className="h-screen w-full flex-col overflow-y-auto p-3 sm:p-4">
+      <Flex className="flex-row gap-3 sm:gap-0">
         <Flex
           align="center"
-          className="mb-4 gap-2 rounded-xl border border-gray-700 bg-gradient-to-br from-indigo-600 via-purple-600 to-orange-600 p-2 pr-3"
+          className="mb-3 gap-2 rounded-xl border border-gray-700 bg-gradient-to-br from-indigo-600 via-purple-600 to-orange-600 p-2 pr-3 sm:mb-4 sm:gap-2"
         >
-          <GiftIcon className="mr-2 size-12 rounded-xl border-2 p-2" />
-          <span className="text-5xl font-extrabold text-white">LOOTBOX</span>
-          <Flex>
-            <span className="rounded-full border border-white/70 bg-gradient-to-br from-indigo-500 via-purple-600 to-indigo-800 px-2 py-1 text-xl font-medium">
-              Simulator
-            </span>
-          </Flex>
+          <GiftIcon className="mr-1 size-8 rounded-xl border-2 p-1 sm:size-12 sm:p-2" />
+          <span className="text-2xl font-extrabold text-white sm:text-5xl">
+            LOOTBOX
+          </span>
+          <span className="rounded-full border border-white/70 bg-gradient-to-br from-indigo-500 via-purple-600 to-indigo-800 px-2 py-1 text-base font-medium sm:text-xl">
+            Simulator
+          </span>
         </Flex>
 
         {/* Toggle Button */}
         <Flex
           align="center"
-          className="mb-4 ml-auto gap-3 rounded-xl border border-gray-700 bg-gray-800 px-3 py-2 font-semibold"
+          className="mb-3 w-full gap-3 rounded-xl border border-gray-700 bg-gray-800 px-2 py-2 text-sm font-semibold sm:mb-4 sm:ml-auto sm:w-auto sm:px-3 sm:text-base"
         >
           <button
             onClick={() => setIsLeftSideOnLeft(!isLeftSideOnLeft)}
-            className="flex items-center justify-center rounded-lg border border-white/40 bg-green-500 px-4 py-2 shadow-lg transition-all duration-200 hover:bg-green-600"
+            className="hidden h-full w-full items-center justify-center rounded-lg border border-white/40 bg-green-500 px-4 py-2 shadow-lg transition-all duration-200 hover:bg-green-600 sm:flex"
           >
-            <ArrowRightLeftIcon className="text-white" size={24} />
+            <ArrowRightLeftIcon className="size-6 text-white" />
           </button>
           <button
             onClick={handleToggleView}
-            className="flex items-center gap-2 rounded-lg border border-white/40 bg-blue-500 px-4 py-2 text-white shadow-lg transition-all duration-200 hover:bg-blue-600"
+            className="hidden w-full items-center gap-2 rounded-lg border border-white/40 bg-blue-500 px-4 py-2 text-white shadow-lg transition-all duration-200 hover:bg-blue-600 sm:flex"
           >
-            {isInventoryView ? <FileBoxIcon /> : <BoxIcon />}
+            {isInventoryView ? (
+              <FileBoxIcon className="size-4 sm:size-6" />
+            ) : (
+              <BoxIcon className="size-4 sm:size-6" />
+            )}
             {isInventoryView ? " Lootboxes" : "Inventory"}
           </button>
 
           {/* Clear Inventory Button */}
           <button
             onClick={handleClearInventory}
-            className="flex items-center gap-2 rounded-lg border border-white/40 bg-red-500 px-4 py-2 text-white shadow-lg transition-all duration-200 hover:bg-red-600"
+            className="flex h-full w-full items-center justify-center gap-2 rounded-lg border border-white/40 bg-red-500 px-2 py-2 text-white shadow-lg transition-all duration-200 hover:bg-red-600 sm:px-4"
           >
-            <TrashIcon />
-            Clear
+            <TrashIcon className="size-6" />
+            <span className="hidden sm:inline">Clear</span>
           </button>
         </Flex>
       </Flex>

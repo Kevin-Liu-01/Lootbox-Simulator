@@ -8,7 +8,7 @@ import LootBoxOpening from "~/app/components/lootbox_opening/lootbox_opening";
 import LootBoxSide from "~/app/components/lootbox_side/lootbox_side";
 import { availableLootBoxes } from "~/app/utils/drops";
 import useLocalStorage from "~/app/utils/useLocalStorage";
-import { XIcon, SwatchBook } from "lucide-react";
+import { XIcon, SwatchBook, DoorOpenIcon } from "lucide-react";
 
 const App = () => {
   const [selectedLootBox, setSelectedLootBox] = useState<LootBox | null>(null);
@@ -25,6 +25,7 @@ const App = () => {
   );
   const [starrDropStage, setStarrDropStage] = useState<number>(0);
   const [isLeftSideOnLeft, setIsLeftSideOnLeft] = useState(true); // New state to toggle position
+  const [displayOpening, setDisplayOpening] = useState(false);
 
   const addLootBoxToInventory = (box: LootBox, count: number) => {
     setLootBoxInventory([
@@ -35,6 +36,7 @@ const App = () => {
 
   const openLootBox = (box: LootBox) => {
     setIsOpening(true);
+    setDisplayOpening(true);
     if (box.type === "starrdrop") {
       setStarrDropStage(1);
     } else {
@@ -116,25 +118,45 @@ const App = () => {
       />
 
       {/* Left Side: Opening Area */}
+      {displayOpening && (
+        <Flex
+          align="center"
+          justify="center"
+          className="absolute z-50 h-screen w-full flex-col items-center justify-center bg-gradient-to-br from-indigo-800 via-purple-800 to-indigo-900 p-4 sm:hidden sm:h-0 sm:w-0 sm:p-0"
+        >
+          <LootBoxOpening
+            selectedLootBox={selectedLootBox}
+            openedItems={openedItems}
+            isOpening={isOpening}
+            starrDropStage={starrDropStage}
+            handleStarrDropClick={handleStarrDropClick}
+          />
+
+          {/* Return button */}
+          {!isOpening && (
+            <button
+              className="animate-fadeIn absolute bottom-8 z-50 mx-auto flex gap-2 rounded-xl border border-gray-900/40 bg-gray-800/50 p-2 font-semibold text-gray-200 hover:bg-gray-700 hover:text-gray-100"
+              onClick={() => setDisplayOpening(false)}
+            >
+              <DoorOpenIcon size={24} />
+              Return to Inventory
+            </button>
+          )}
+        </Flex>
+      )}
+
       <Flex
         align="center"
         justify="center"
-        className="h-screen flex-col items-center justify-center bg-gradient-to-br from-indigo-800 via-purple-800 to-indigo-900 p-4 sm:w-1/2"
+        className="relative hidden h-0 flex-col items-center justify-center bg-gradient-to-br from-indigo-800 via-purple-800 to-indigo-900 sm:inline sm:h-screen sm:w-1/2 sm:p-4"
       >
-        <div className="relative h-full w-full overflow-hidden rounded-2xl bg-gray-900 shadow-lg shadow-blue-800/50">
-          {/* Outer frame with glowing effect */}
-          <div className="absolute inset-0 z-20 animate-pulse rounded-2xl border-2 border-dashed border-blue-400/40"></div>
-          {/* Content area */}
-          <div className="relative z-30 h-full w-full overflow-y-auto">
-            <LootBoxOpening
-              selectedLootBox={selectedLootBox}
-              openedItems={openedItems}
-              isOpening={isOpening}
-              starrDropStage={starrDropStage}
-              handleStarrDropClick={handleStarrDropClick}
-            />
-          </div>
-        </div>
+        <LootBoxOpening
+          selectedLootBox={selectedLootBox}
+          openedItems={openedItems}
+          isOpening={isOpening}
+          starrDropStage={starrDropStage}
+          handleStarrDropClick={handleStarrDropClick}
+        />
       </Flex>
 
       {/* Modal */}
@@ -142,10 +164,10 @@ const App = () => {
         <Flex
           align="center"
           justify="center"
-          className="fixed inset-0 z-20 bg-black bg-opacity-75"
+          className="fixed inset-0 z-50 bg-black bg-opacity-75"
         >
           <div
-            className={`${selectedLootBox.background} relative w-96 max-w-full rounded-xl p-5 text-center text-gray-100 shadow-lg`}
+            className={`${selectedLootBox.background} relative m-8 w-96 max-w-full rounded-xl p-5 text-center text-gray-100 shadow-lg`}
           >
             <XIcon
               className="absolute right-4 top-4 size-6 cursor-pointer text-gray-800 hover:text-gray-700"

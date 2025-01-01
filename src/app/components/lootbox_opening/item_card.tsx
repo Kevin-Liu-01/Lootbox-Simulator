@@ -32,16 +32,16 @@ export default function ItemCard({
         <img
           src={item?.image}
           alt={item.name}
-          className="h-32 w-32 rounded-md bg-gradient-to-br from-gray-800/40 to-black/40 object-contain p-2 shadow-lg"
+          className="h-16 w-16 rounded-xl bg-gradient-to-br from-gray-800/40 to-black/40 object-contain p-2 shadow-lg sm:h-32 sm:w-32 sm:rounded-md"
         />
-        <p className="text-md mt-4 text-center font-bold tracking-wide text-white drop-shadow-md">
+        <p className="sm:text-md mt-4 text-center text-xs font-bold tracking-wide text-white drop-shadow-md">
           {item.name}
         </p>
         <div className="mt-3 flex justify-center space-x-2">
           {[...Array(5)].map((_, i) => (
             <StarIcon
               key={i}
-              className={`h-5 w-5 hover:rotate-6 ${
+              className={`h-3 w-3 hover:rotate-6 sm:h-5 sm:w-5 ${
                 i <
                 (item.rarity === "legendary"
                   ? 5
@@ -60,8 +60,9 @@ export default function ItemCard({
             />
           ))}
         </div>
+        {/* Rarity Badge */}
         <div
-          className={`absolute right-2 top-2 rounded-full border border-white/40 px-3 py-1 text-xs font-bold text-white shadow-md ${
+          className={`absolute right-2 top-2 rounded-full border border-white/40 px-3 py-1 text-[0.5rem] font-bold text-white shadow-md sm:text-xs ${
             rarityColors[item.rarity]
           }`}
         >
