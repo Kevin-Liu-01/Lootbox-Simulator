@@ -31,6 +31,31 @@ const LootBoxOpening: React.FC<LootBoxAnimationProps> = ({
   handleStarrDropClick,
 }) => {
   const [shakeEffect, setShakeEffect] = useState(true);
+
+  const renderItems = () => (
+    <Flex
+      align="center"
+      justify="center"
+      className="absolute z-10 my-3 h-full w-full max-w-4xl overflow-y-scroll sm:w-[90%]"
+    >
+      <Flex
+        align="center"
+        justify="center"
+        className="mx-8 flex-wrap gap-2 sm:mx-4 sm:gap-4"
+      >
+        {/*render a white flash that only appears for 25 milliseconds */}
+        <FlashingLights />
+
+        {/*render a spinning white circle  */}
+        <SpinningLightCircle />
+
+        {openedItems.map((item, index) => (
+          <ItemCard item={item} index={index} />
+        ))}
+      </Flex>
+    </Flex>
+  );
+
   function handleDisplay() {
     if (!selectedLootBox) {
       return (
@@ -68,26 +93,6 @@ const LootBoxOpening: React.FC<LootBoxAnimationProps> = ({
         </Flex>
       );
     }
-
-    const renderItems = () => (
-      <Flex
-        align="center"
-        justify="center"
-        className="absolute z-10 my-3 h-full w-full max-w-4xl overflow-y-scroll sm:w-[90%]"
-      >
-        <Flex align="center" justify="center" className="flex-wrap gap-4">
-          {/*render a white flash that only appears for 25 milliseconds */}
-          <FlashingLights />
-
-          {/*render a spinning white circle  */}
-          <SpinningLightCircle />
-
-          {openedItems.map((item, index) => (
-            <ItemCard item={item} index={index} />
-          ))}
-        </Flex>
-      </Flex>
-    );
 
     switch (selectedLootBox.type) {
       case "crate":
