@@ -8,7 +8,7 @@ import LootBoxOpening from "~/app/components/lootbox_opening/lootbox_opening";
 import LootBoxSide from "~/app/components/lootbox_side/lootbox_side";
 import { availableLootBoxes } from "~/app/utils/drops";
 import useLocalStorage from "~/app/utils/useLocalStorage";
-import { XIcon, SwatchBook, DoorOpenIcon } from "lucide-react";
+import { XIcon, DoorOpenIcon } from "lucide-react";
 
 const App = () => {
   const [selectedLootBox, setSelectedLootBox] = useState<LootBox | null>(null);
@@ -62,18 +62,21 @@ const App = () => {
   const simulateDrops = (box: LootBox, limit: number): Item[] => {
     const totalWeight = box.drops.reduce((acc, drop) => acc + drop.chance, 0);
     const result: Item[] = [];
+
     for (let i = 0; i < limit; i++) {
       const randomValue = Math.random() * totalWeight;
       let cumulativeWeight = 0;
       for (const drop of box.drops) {
         cumulativeWeight += drop.chance;
         if (randomValue <= cumulativeWeight) {
-          drop.id = uuidv4();
-          result.push(drop);
+          // Create a copy of the drop to avoid modifying the original
+          const newDrop = { ...drop, id: uuidv4() };
+          result.push(newDrop);
           break;
         }
       }
     }
+
     return result;
   };
 
@@ -135,7 +138,7 @@ const App = () => {
           {/* Return button */}
           {!isOpening && (
             <button
-              className="animate-fadeIn absolute bottom-8 z-50 mx-auto flex gap-2 rounded-xl border border-gray-900/40 bg-gray-800/50 p-2 font-semibold text-gray-200 hover:bg-gray-700 hover:text-gray-100"
+              className="absolute bottom-8 z-50 mx-auto flex animate-fadeIn gap-2 rounded-xl border border-gray-900/40 bg-gray-800/50 p-2 font-semibold text-gray-200 hover:bg-gray-700 hover:text-gray-100"
               onClick={() => setDisplayOpening(false)}
             >
               <DoorOpenIcon size={24} />
