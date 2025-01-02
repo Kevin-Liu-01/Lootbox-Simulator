@@ -37,6 +37,9 @@ const App = () => {
   const openLootBox = (box: LootBox) => {
     setIsOpening(true);
     setDisplayOpening(true);
+    setLootBoxInventory(
+      lootBoxInventory.filter((b: { id: string }) => b.id !== box.id),
+    );
     if (box.type === "starrdrop") {
       setStarrDropStage(1);
     } else {
@@ -47,16 +50,9 @@ const App = () => {
         );
         setOpenedItems(items);
         setCollectedItems([...collectedItems, ...items]);
-        finalizeOpening(box);
+        setIsOpening(false);
       }, 1000);
     }
-  };
-
-  const finalizeOpening = (box: LootBox) => {
-    setLootBoxInventory(
-      lootBoxInventory.filter((b: { id: string }) => b.id !== box.id),
-    );
-    setIsOpening(false);
   };
 
   const simulateDrops = (box: LootBox, limit: number): Item[] => {
@@ -87,7 +83,8 @@ const App = () => {
       const upgradedItem = simulateDrops(selectedLootBox!, 1);
       setOpenedItems(upgradedItem);
       setCollectedItems([...collectedItems, ...upgradedItem]);
-      finalizeOpening(selectedLootBox!);
+      setIsOpening(false);
+
       setStarrDropStage(6);
     }
   };
@@ -218,7 +215,7 @@ const App = () => {
                       <img
                         src={item.image}
                         alt={item.name}
-                        className="h-6 w-6 rounded-full object-cover"
+                        className="h-6 w-6 rounded-full object-contain"
                       />
                       {item.name}
                       <Text className="ml-auto text-xs font-semibold text-white/80">

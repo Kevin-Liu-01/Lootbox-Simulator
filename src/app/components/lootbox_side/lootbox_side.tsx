@@ -51,7 +51,8 @@ export default function LootBoxSide({
       <Flex className="flex-row gap-3 sm:gap-0">
         <Flex
           align="center"
-          className="mb-3 gap-2 rounded-xl border border-gray-700 bg-gradient-to-br from-indigo-600 via-purple-600 to-orange-600 p-2 pr-3 sm:mb-4 sm:gap-2"
+          justify="center"
+          className="mb-3 gap-2 rounded-2xl border border-gray-700 bg-gradient-to-br from-indigo-600 via-purple-600 to-orange-600 p-2 pr-3 sm:mb-4 sm:gap-2"
         >
           <GiftIcon className="mr-1 size-8 rounded-xl border-2 p-1 sm:size-12 sm:p-2" />
           <span className="text-2xl font-extrabold text-white sm:text-5xl">
@@ -65,17 +66,17 @@ export default function LootBoxSide({
         {/* Toggle Button */}
         <Flex
           align="center"
-          className="mb-3 w-full gap-3 rounded-xl border border-gray-700 bg-gray-800 px-2 py-2 text-sm font-semibold sm:mb-4 sm:ml-auto sm:w-auto sm:px-3 sm:text-base"
+          className="mb-3 w-full gap-2 rounded-xl border border-gray-700 bg-gray-800 px-2 py-2 text-sm font-semibold sm:mb-4 sm:ml-auto sm:w-auto sm:text-base"
         >
           <button
             onClick={() => setIsLeftSideOnLeft(!isLeftSideOnLeft)}
-            className="hidden h-full w-full items-center justify-center rounded-lg border border-white/40 bg-green-500 px-4 py-2 shadow-lg transition-all duration-200 hover:bg-green-600 sm:flex"
+            className="hidden h-full w-full items-center justify-center rounded-lg border border-white/40 bg-green-500 px-3 py-2 shadow-lg transition-all duration-200 hover:bg-green-600 sm:flex"
           >
-            <ArrowRightLeftIcon className="size-6 text-white" />
+            <ArrowRightLeftIcon className="size-5 text-white" />
           </button>
           <button
             onClick={handleToggleView}
-            className="hidden w-full items-center gap-2 rounded-lg border border-white/40 bg-blue-500 px-4 py-2 text-white shadow-lg transition-all duration-200 hover:bg-blue-600 sm:flex"
+            className="hidden h-full w-full items-center gap-2 rounded-lg border border-white/40 bg-blue-500 px-4 py-2 text-white shadow-lg transition-all duration-200 hover:bg-blue-600 sm:flex"
           >
             {isInventoryView ? (
               <FileBoxIcon className="size-4 sm:size-6" />

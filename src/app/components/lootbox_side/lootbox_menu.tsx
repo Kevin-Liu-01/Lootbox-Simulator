@@ -83,7 +83,7 @@ export default function LootBoxMenu({
                       <img
                         src={item.image}
                         alt={item.name}
-                        className="h-6 w-6 rounded-full object-cover"
+                        className="h-6 w-6 rounded-full object-contain"
                       />
                       {item.name}
                       <Text className="ml-auto text-xs font-semibold text-white/80">
