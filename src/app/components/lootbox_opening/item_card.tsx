@@ -27,11 +27,11 @@ export default function ItemCard({
         <div
           className={`absolute inset-0 -z-10 animate-pulse rounded-2xl bg-gradient-to-t from-gray-900/10 to-black/10`}
         />
-        <Flex justify="center" className="relative">
+        <Flex justify="center" className="relative w-full">
           <img
             src={item?.image}
             alt={item.name}
-            className="h-16 w-16 rounded-xl bg-gradient-to-br from-gray-800/40 to-black/40 object-contain p-2 shadow-lg sm:h-32 sm:w-32 sm:rounded-md"
+            className="h-16 w-full rounded-xl bg-gradient-to-br from-gray-800/40 to-black/40 object-contain p-2 shadow-lg sm:h-32 sm:w-32 sm:rounded-md"
           />
           {/* Rarity Badge */}
           <div

@@ -211,9 +211,13 @@ export default function CollectedItems({
             />
 
             {/* Item Image */}
-            <Flex align="center" justify="center" className="mb-6 rounded-full">
+            <Flex
+              align="center"
+              justify="center"
+              className="mb-6 w-full rounded-full"
+            >
               <div
-                className="h-[90%] w-[90%] rounded-full bg-gray-200/10 p-1"
+                className="h-[90%] w-full rounded-lg bg-gray-200/10 p-1"
                 style={{
                   background: `linear-gradient(135deg, ${rarityColors[selectedItem.rarity]}cc, ${rarityColors[selectedItem.rarity]}88)`,
                   boxShadow: "0 0 15px rgba(255, 255, 255, 0.2)",
@@ -222,7 +226,7 @@ export default function CollectedItems({
                 <img
                   src={selectedItem.image}
                   alt={selectedItem.name}
-                  className="h-full w-full rounded-full object-contain transition-all hover:rotate-2 hover:scale-105"
+                  className="h-full max-h-72 w-full object-contain transition-all hover:rotate-2 hover:scale-105"
                 />
               </div>
             </Flex>
