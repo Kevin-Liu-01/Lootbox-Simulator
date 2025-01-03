@@ -27,15 +27,15 @@ export default function ItemCard({
         <div
           className={`absolute inset-0 -z-10 animate-pulse rounded-2xl bg-gradient-to-t from-gray-900/10 to-black/10`}
         />
-        <Flex justify="center" className="relative w-full">
+        <Flex justify="center" className="relative sm:w-full">
           <img
             src={item?.image}
             alt={item.name}
-            className="h-16 w-full rounded-xl bg-gradient-to-br from-gray-800/40 to-black/40 object-contain p-2 shadow-lg sm:h-32 sm:w-32 sm:rounded-md"
+            className="h-16 w-full rounded-xl bg-gradient-to-br from-gray-800/40 to-black/40 object-contain p-2 shadow-lg sm:h-32 sm:rounded-md"
           />
           {/* Rarity Badge */}
           <div
-            className={`absolute bottom-[-0.65rem] rounded-full border border-white/40 px-2 py-0.5 text-[0.5rem] font-bold text-white shadow-md sm:text-xs ${
+            className={`absolute bottom-[-0.65rem] truncate rounded-full border border-white/40 px-2 py-0.5 text-[0.5rem] font-bold text-white shadow-md sm:text-xs ${
               rarityColors[item.rarity]
             }`}
           >
