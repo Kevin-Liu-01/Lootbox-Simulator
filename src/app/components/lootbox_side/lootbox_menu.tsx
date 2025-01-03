@@ -25,10 +25,19 @@ export default function LootBoxMenu({
   };
 
   const decrementQuantity = (id: string) => {
-    setQuantities((prev: any) => ({
-      ...prev,
-      [id]: Math.max(prev[id] - 1, 1),
-    }));
+    //if quantity is 1, then we make it 20
+    if (quantities[id] === 1) {
+      setQuantities((prev: any) => ({
+        ...prev,
+        [id]: 20,
+      }));
+      return;
+    } else {
+      setQuantities((prev: any) => ({
+        ...prev,
+        [id]: Math.max(prev[id] - 1, 1),
+      }));
+    }
   };
 
   const addHandler = (box: LootBox, count: number) => {
@@ -83,7 +92,7 @@ export default function LootBoxMenu({
                       <img
                         src={item.image}
                         alt={item.name}
-                        className="h-6 w-6 rounded-full object-contain"
+                        className="h-6 w-6 rounded-full bg-black/10 object-contain p-1"
                       />
                       {item.name}
                       <Text className="ml-auto text-xs font-semibold text-white/80">

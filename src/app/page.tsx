@@ -164,7 +164,7 @@ const App = () => {
         <Flex
           align="center"
           justify="center"
-          className="fixed inset-0 z-50 bg-black bg-opacity-75"
+          className="fixed inset-0 z-50 bg-black bg-opacity-75 backdrop-blur-sm"
         >
           <div
             className={`${selectedLootBox.background} relative m-8 w-96 max-w-full rounded-xl p-5 text-center text-gray-100 shadow-lg`}

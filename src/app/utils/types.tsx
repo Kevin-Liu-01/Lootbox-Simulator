@@ -7,11 +7,12 @@ export type Rarity =
   | "legendary";
 
 export type Item = {
-  id: string;
+  id?: string;
   name: string;
   rarity: Rarity;
   chance: number; // Probability of obtaining the item
   image: string; // URL or file path to the item's image
+  description?: string; // Brief description of the item
 };
 
 export type LootBoxType = "crate" | "starrdrop" | "skin" | "summon";

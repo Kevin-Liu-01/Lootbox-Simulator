@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Box, Flex, Text } from "@radix-ui/themes";
+import { Box, Flex, Text, Tooltip } from "@radix-ui/themes";
 import { rarityColors, Item } from "~/app/utils/types";
 import InventoryFiller from "~/app/utils/inventory_filler";
 import useLocalStorage from "~/app/utils/useLocalStorage";
-import { TrashIcon, BoxesIcon } from "lucide-react";
+import { TrashIcon, BoxesIcon, XIcon } from "lucide-react";
 
 export default function CollectedItems({
   collectedItems,
@@ -14,6 +14,8 @@ export default function CollectedItems({
 }) {
   const [columns, setColumns] = useLocalStorage("items_columns", "grid-cols-4"); // Default 6 columns
   const [selectedRarity, setSelectedRarity] = useState<string>("all");
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
 
   const handleColumnToggle = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setColumns(e.target.value);
@@ -23,6 +25,11 @@ export default function CollectedItems({
     setCollectedItems(
       collectedItems.filter((item: Item) => item.id !== itemId),
     );
+  };
+
+  const handleItemClick = (item: Item) => {
+    setSelectedItem(item);
+    setModalOpen(true);
   };
 
   const rarityTypes = [
@@ -122,56 +129,60 @@ export default function CollectedItems({
           .slice() // Create a shallow copy to avoid mutating the original array
           .reverse() // Reverse the array
           .map((item: Item, index: number) => (
-            <Flex
-              key={index}
-              align="center"
-              justify="center"
-              className={`relative min-h-32 transform flex-col overflow-hidden rounded-lg p-4 text-center shadow-lg transition duration-300 hover:rotate-1 hover:scale-105 hover:shadow-2xl ${rarityColors[item.rarity]} hover:border-gradient-to-r border-4 border-transparent to-${rarityColors[
-                item.rarity
-              ]
-                ?.split(" ")[1]
-                ?.replace("from-", "")}`}
-            >
-              {/* Glow Effect */}
-              <div className="absolute inset-0 z-10 h-full w-full rounded-lg opacity-0 transition-opacity duration-300 hover:opacity-100">
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent blur-lg"></div>
-              </div>
-
-              {/* Item Image */}
+            <Tooltip key={index} content="View More" className="h-full w-full">
               <Flex
                 align="center"
                 justify="center"
-                className="relative z-20 size-12 rounded-full bg-gradient-to-tr from-gray-800/40 to-gray-700/40 p-1 shadow-md transition-all hover:scale-105 sm:size-16"
+                className={`relative min-h-32 transform cursor-pointer flex-col overflow-hidden rounded-lg p-4 text-center shadow-lg transition duration-300 hover:rotate-1 hover:scale-105 hover:shadow-2xl ${rarityColors[item.rarity]} hover:border-gradient-to-r border-4 border-transparent to-${rarityColors[
+                  item.rarity
+                ]
+                  ?.split(" ")[1]
+                  ?.replace("from-", "")}`}
               >
-                <img
-                  src={item?.image}
-                  alt={item.name}
-                  className="rounded-full object-contain sm:h-14 sm:w-14"
-                />
+                {/* Glow Effect */}
+                <div
+                  onClick={() => handleItemClick(item)}
+                  className="absolute inset-0 z-10 h-full w-full rounded-lg opacity-0 transition-opacity duration-300 hover:opacity-100"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent blur-lg"></div>
+                </div>
+
+                {/* Item Image */}
+                <Flex
+                  align="center"
+                  justify="center"
+                  className="relative z-20 size-12 rounded-full bg-gradient-to-tr from-gray-800/40 to-gray-700/40 p-1 shadow-md transition-all hover:rotate-2 hover:scale-105 sm:size-16"
+                >
+                  <img
+                    src={item?.image}
+                    alt={item.name}
+                    className="rounded-full object-contain sm:h-14 sm:w-14"
+                  />
+                </Flex>
+
+                {/* Delete Button */}
+                <button
+                  className="absolute right-0 top-0 z-40 rounded-full bg-red-500/50 p-1 text-white hover:bg-red-500/70 sm:left-1 sm:right-auto sm:top-1"
+                  onClick={() => item.id && deleteSelectedItem(item.id)}
+                >
+                  <TrashIcon size={16} />
+                </button>
+
+                {/* Rarity Badge */}
+                <div
+                  className={`absolute z-30 truncate rounded-full border border-white/40 px-2 py-0.5 text-[0.65rem] font-bold text-white shadow-lg sm:right-1 sm:top-1 ${
+                    rarityColors[item.rarity]
+                  }`}
+                >
+                  {item.rarity.toUpperCase()}
+                </div>
+
+                {/* Item Details */}
+                <Box className="relative mt-3 text-wrap text-xs font-semibold text-white">
+                  <Text className="sm:truncate">{item.name}</Text>
+                </Box>
               </Flex>
-
-              {/* Delete Button */}
-              <button
-                className="absolute right-0 top-0 z-40 rounded-full bg-red-500/50 p-1 text-white hover:bg-red-500/70 sm:left-1 sm:right-auto sm:top-1"
-                onClick={() => deleteSelectedItem(item.id)}
-              >
-                <TrashIcon size={16} />
-              </button>
-
-              {/* Rarity Badge */}
-              <div
-                className={`absolute z-30 truncate rounded-full border border-white/40 px-3 py-1 text-[0.5rem] font-bold text-white shadow-lg sm:right-1 sm:top-1 ${
-                  rarityColors[item.rarity]
-                }`}
-              >
-                {item.rarity.toUpperCase()}
-              </div>
-
-              {/* Item Details */}
-              <Box className="relative mt-3 text-wrap text-xs font-semibold text-white">
-                <Text className="sm:truncate">{item.name}</Text>
-              </Box>
-            </Flex>
+            </Tooltip>
           ))}
 
         <InventoryFiller
@@ -182,6 +193,71 @@ export default function CollectedItems({
           height="h-28"
         />
       </div>
+      {/* Modal */}
+      {isModalOpen && selectedItem && (
+        <Flex
+          justify="center"
+          align="center"
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
+        >
+          <Flex
+            className={`${rarityColors[selectedItem.rarity]} relative w-[90%] max-w-md flex-col rounded-xl border border-white/20 bg-opacity-20 p-6 shadow-xl`}
+            align="center"
+          >
+            {/* Close Button */}
+            <XIcon
+              className="absolute right-2 top-2 cursor-pointer text-gray-200 hover:text-white"
+              onClick={() => setModalOpen(false)}
+            />
+
+            {/* Item Image */}
+            <Flex align="center" justify="center" className="mb-6 rounded-full">
+              <div
+                className="h-[90%] w-[90%] rounded-full bg-gray-200/10 p-1"
+                style={{
+                  background: `linear-gradient(135deg, ${rarityColors[selectedItem.rarity]}cc, ${rarityColors[selectedItem.rarity]}88)`,
+                  boxShadow: "0 0 15px rgba(255, 255, 255, 0.2)",
+                }}
+              >
+                <img
+                  src={selectedItem.image}
+                  alt={selectedItem.name}
+                  className="h-full w-full rounded-full object-contain transition-all hover:rotate-2 hover:scale-105"
+                />
+              </div>
+            </Flex>
+
+            {/* Item Name */}
+            <Text className="mb-2 text-center text-2xl font-bold text-white">
+              {selectedItem.name}
+            </Text>
+
+            {/* Rarity */}
+            <Text
+              className={`mb-4 w-min text-nowrap rounded-full border border-white bg-gradient-to-br from-gray-300/20 to-gray-400/20 px-2 text-center text-sm font-semibold uppercase`}
+            >
+              {selectedItem.rarity}
+            </Text>
+
+            {/* Description */}
+            <Text className="mb-6 text-center text-sm text-gray-100">
+              {selectedItem.description}
+            </Text>
+
+            {/* Delete Button */}
+            <button
+              onClick={() => {
+                selectedItem.id && deleteSelectedItem(selectedItem.id);
+                setModalOpen(false);
+              }}
+              className="flex w-full items-center justify-center rounded-md bg-red-500 p-2 text-sm font-bold text-white transition hover:bg-red-600"
+            >
+              <TrashIcon size={16} className="mr-2" />
+              Delete {selectedItem.name}
+            </button>
+          </Flex>
+        </Flex>
+      )}
     </Flex>
   );
 }

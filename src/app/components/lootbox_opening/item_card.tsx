@@ -20,20 +20,28 @@ export default function ItemCard({
     <>
       <Flex
         key={"itemcard" + item + index}
-        className={`animate-fadeIn relative flex flex-col items-center rounded-2xl p-3 shadow-2xl backdrop-blur-md transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_5px_rgba(255,255,255,0.4)] ${
+        className={`relative flex animate-fadeIn flex-col items-center rounded-2xl p-3 shadow-2xl backdrop-blur-md transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_5px_rgba(255,255,255,0.4)] ${
           rarityColors[item.rarity]
-        } border border-white/10 bg-gradient-to-t from-gray-900/60 to-black/70`}
+        } border border-white/10 bg-opacity-50`}
       >
         <div
-          className={`absolute inset-0 -z-10 animate-pulse rounded-2xl opacity-20 ${
-            rarityColors[item.rarity]
-          }`}
+          className={`absolute inset-0 -z-10 animate-pulse rounded-2xl bg-gradient-to-t from-gray-900/10 to-black/10`}
         />
-        <img
-          src={item?.image}
-          alt={item.name}
-          className="h-16 w-16 rounded-xl bg-gradient-to-br from-gray-800/40 to-black/40 object-contain p-2 shadow-lg sm:h-32 sm:w-32 sm:rounded-md"
-        />
+        <Flex justify="center" className="relative">
+          <img
+            src={item?.image}
+            alt={item.name}
+            className="h-16 w-16 rounded-xl bg-gradient-to-br from-gray-800/40 to-black/40 object-contain p-2 shadow-lg sm:h-32 sm:w-32 sm:rounded-md"
+          />
+          {/* Rarity Badge */}
+          <div
+            className={`absolute bottom-[-0.65rem] rounded-full border border-white/40 px-2 py-0.5 text-[0.5rem] font-bold text-white shadow-md sm:text-xs ${
+              rarityColors[item.rarity]
+            }`}
+          >
+            {item.rarity.toUpperCase()}
+          </div>
+        </Flex>
         <p className="sm:text-md mt-4 text-center text-xs font-bold tracking-wide text-white drop-shadow-md">
           {item.name}
         </p>
@@ -59,14 +67,6 @@ export default function ItemCard({
               }`}
             />
           ))}
-        </div>
-        {/* Rarity Badge */}
-        <div
-          className={`absolute right-2 top-2 rounded-full border border-white/40 px-3 py-1 text-[0.5rem] font-bold text-white shadow-md sm:text-xs ${
-            rarityColors[item.rarity]
-          }`}
-        >
-          {item.rarity.toUpperCase()}
         </div>
       </Flex>
     </>
