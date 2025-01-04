@@ -59,7 +59,7 @@ export default function CollectedItems({
       : collectedItems.filter((item) => item.rarity === selectedRarity);
 
   return (
-    <Flex className="mt-3 h-[15rem] w-full flex-col rounded-xl border border-gray-700 bg-gray-800 p-4 shadow-lg sm:mt-4">
+    <Flex className="mt-3 h-[15rem] w-full flex-col rounded-2xl border border-gray-700 bg-gray-800 p-4 shadow-lg sm:mt-4">
       <Flex className="flex-col items-center gap-3 sm:flex-row sm:justify-between sm:gap-0">
         <Flex
           align="center"
@@ -80,7 +80,7 @@ export default function CollectedItems({
               onChange={(e) => setSelectedRarity(e.target.value)}
               className="w-full rounded-lg border border-gray-600 bg-gray-700 p-2 text-gray-300 shadow focus:outline-none focus:ring-2 focus:ring-blue-500 sm:w-auto"
             >
-              <option value="all">All</option>
+              <option value="all">All ({filteredItems.length})</option>
               {rarityTypes.map((rarity) => (
                 <option key={rarity} value={rarity}>
                   {rarity.charAt(0).toUpperCase() + rarity.slice(1)} (
@@ -151,12 +151,12 @@ export default function CollectedItems({
                 <Flex
                   align="center"
                   justify="center"
-                  className="relative z-20 size-12 rounded-full bg-gradient-to-tr from-gray-800/40 to-gray-700/40 p-1 shadow-md transition-all hover:rotate-2 hover:scale-105 sm:size-16"
+                  className="relative z-20 size-14 rounded-full bg-gradient-to-tr from-gray-800/40 to-gray-700/40 p-1 shadow-md transition-all hover:rotate-2 hover:scale-105 sm:size-16"
                 >
                   <img
                     src={item?.image}
                     alt={item.name}
-                    className="rounded-full object-contain sm:h-14 sm:w-14"
+                    className="h-full w-full rounded-full object-contain"
                   />
                 </Flex>
 
@@ -179,7 +179,9 @@ export default function CollectedItems({
 
                 {/* Item Details */}
                 <Box className="relative mt-3 text-wrap text-xs font-semibold text-white">
-                  <Text className="sm:truncate">{item.name}</Text>
+                  <Text className="line-clamp-[2] sm:truncate">
+                    {item.name}
+                  </Text>
                 </Box>
               </Flex>
             </Tooltip>

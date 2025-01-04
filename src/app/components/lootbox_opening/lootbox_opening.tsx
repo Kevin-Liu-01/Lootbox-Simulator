@@ -158,7 +158,7 @@ const LootBoxOpening: React.FC<LootBoxAnimationProps> = ({
           <Flex
             align="center"
             justify="center"
-            className={`relative h-full w-full flex-col ${isOpening ? "animate-shake" : ""} ${selectedLootBox.background}`}
+            className={`relative h-full w-full flex-col overflow-hidden ${isOpening ? "animate-shake" : ""} ${selectedLootBox.background}`}
           >
             <img
               src={selectedLootBox.backgroundImage}
@@ -185,7 +185,7 @@ const LootBoxOpening: React.FC<LootBoxAnimationProps> = ({
           <Flex
             align="center"
             justify="center"
-            className="relative h-full w-full flex-col"
+            className="relative h-full w-full flex-col overflow-hidden"
           >
             <img
               src={selectedLootBox.backgroundImage}

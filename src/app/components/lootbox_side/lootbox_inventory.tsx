@@ -147,7 +147,7 @@ export default function LootBoxInventory({
               <Flex
                 justify="center"
                 align="center"
-                className="relative overflow-hidden rounded-md bg-black/30 p-3 shadow-inner"
+                className="relative overflow-hidden rounded-md bg-black/30 p-2 shadow-inner"
               >
                 <img
                   src={box.backgroundImage}
@@ -158,7 +158,7 @@ export default function LootBoxInventory({
                 <img
                   src={box.image}
                   alt={box.name}
-                  className="z-10 h-20 w-full rounded-lg object-contain transition-transform duration-300 hover:scale-110 sm:h-24"
+                  className="z-10 h-[4.5rem] w-full rounded-lg object-contain transition-transform duration-300 hover:scale-110"
                 />
               </Flex>
 
