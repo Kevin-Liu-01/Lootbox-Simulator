@@ -96,7 +96,6 @@ export const RuneCircle = ({
 }) => {
   const Rune = ({ index, translate }: { index: number; translate: string }) => (
     <div
-      key={`rune-${index}-${translate}`}
       className={`absolute h-12 w-12 transition-all ${isOpening ? "animate-spin" : ""}`}
       style={{
         transform: `rotate(${index * 45}deg) ${translate} rotate(-${index * 45}deg)`,
@@ -104,7 +103,6 @@ export const RuneCircle = ({
     >
       <img
         src={`/images/backgrounds/opening/rune-${index + 1}.webp`} // Replace with actual rune images
-        alt={`Rune ${index + 1}`}
         className={`h-12 w-12 animate-wiggleInfinite ${isOpening || items <= 0 ? "inline" : "hidden"}`}
       />
     </div>
@@ -114,13 +112,13 @@ export const RuneCircle = ({
     <>
       <div className="animate-spinSlower absolute z-40 flex h-full w-full items-center justify-center duration-300">
         {[...Array(8)].map((_, i) => (
-          <Rune index={i} translate="translate(13rem)" />
+          <Rune key={`outer-${i}`} index={i} translate="translate(13rem)" />
         ))}
       </div>
       <div className="animate-spinSlowReverse absolute z-40 flex h-full w-full items-center justify-center duration-300">
         {/*Slower inner circle of runes */}
         {[...Array(8)].map((_, i) => (
-          <Rune index={i + 8} translate="translate(10rem)" />
+          <Rune key={`inner-${i}`} index={i + 8} translate="translate(10rem)" />
         ))}
       </div>
     </>

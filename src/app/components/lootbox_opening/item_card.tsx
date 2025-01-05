@@ -4,10 +4,8 @@ import { rarityColors, Rarity } from "~/app/utils/types";
 
 export default function ItemCard({
   item,
-  index,
 }: {
   item: { name: string; rarity: Rarity; image: string };
-  index: number;
 }) {
   // const [flash, setFlash] = useState(true); // Flash starts as true
 
@@ -19,7 +17,6 @@ export default function ItemCard({
   return (
     <>
       <Flex
-        key={"itemcard" + item + index}
         className={`relative flex animate-fadeIn flex-col items-center rounded-2xl p-3 shadow-2xl backdrop-blur-md transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_5px_rgba(255,255,255,0.4)] ${
           rarityColors[item.rarity]
         } border border-white/10 bg-opacity-50`}

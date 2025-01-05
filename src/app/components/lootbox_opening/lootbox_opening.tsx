@@ -85,7 +85,7 @@ const LootBoxOpening: React.FC<LootBoxAnimationProps> = ({
         <SpinningLightCircle />
 
         {openedItems.map((item, index) => (
-          <ItemCard item={item} index={index} />
+          <ItemCard key={"itemcard" + item.name + index} item={item} />
         ))}
       </Flex>
     </Flex>
