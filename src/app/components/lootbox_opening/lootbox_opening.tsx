@@ -12,6 +12,8 @@ import {
   OpeningSparks,
   SpeedParticles,
   Portal,
+  RuneCircle,
+  GlowingAura,
 } from "~/app/utils/staticImages";
 import { GiftIcon, GithubIcon } from "lucide-react";
 
@@ -252,6 +254,41 @@ const LootBoxOpening: React.FC<LootBoxAnimationProps> = ({
                 </p>
               </Flex>
             )}
+          </Flex>
+        );
+
+      case "runereveal":
+        return (
+          <Flex
+            align="center"
+            justify="center"
+            className={`relative h-full w-full flex-col overflow-hidden ${selectedLootBox.background}`}
+          >
+            <Flex
+              align="center"
+              justify="center"
+              className="relative h-full w-full flex-col"
+            >
+              <RuneCircle isOpening={isOpening} items={openedItems.length} />
+              <GlowingAura />
+              <img
+                src={selectedLootBox.image}
+                alt={selectedLootBox.name}
+                className={`z-30 h-72 w-72 transition-transform duration-[1000] ease-in-out ${
+                  isOpening ? "animate-wiggleInfinite" : "hover:scale-105"
+                }`}
+              />
+            </Flex>
+            <BackgroundLightning isOpening={isOpening} />
+            <Particles show={openedItems.length != 0} />
+            <OpeningSparks isOpening={isOpening} />
+            <img
+              src={selectedLootBox.backgroundImage}
+              alt={selectedLootBox.name}
+              className={`${isOpening ? "animate-shake" : "animate-pulse"} absolute h-full w-full object-cover opacity-50`}
+            />
+
+            {openedItems.length > 0 && renderItems()}
           </Flex>
         );
 

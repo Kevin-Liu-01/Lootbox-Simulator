@@ -182,7 +182,7 @@ const App = () => {
               From: {selectedLootBox.game}
             </p>
             {/* Loot Box Image */}
-            <div className="relative mb-3 overflow-hidden rounded-lg border border-gray-900/60 bg-gray-700 p-4 shadow-inner">
+            <div className="relative mb-3 overflow-hidden rounded-lg border border-gray-900/60 bg-gray-700/60 p-4 shadow-inner">
               <img
                 src={selectedLootBox.image}
                 alt={selectedLootBox.name}
@@ -192,7 +192,7 @@ const App = () => {
                 <img
                   src={selectedLootBox.backgroundImage}
                   alt="Background"
-                  className="z-5 absolute inset-0 h-full w-full border object-cover opacity-20 blur-[2px]"
+                  className="z-5 absolute inset-0 h-full w-full border object-cover opacity-20 blur-[1px]"
                 />
               )}
             </div>

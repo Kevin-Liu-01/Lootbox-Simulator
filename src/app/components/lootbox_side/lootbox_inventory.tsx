@@ -1,4 +1,4 @@
-import { Flex } from "@radix-ui/themes";
+import { Box, Flex } from "@radix-ui/themes";
 import React, { useState } from "react";
 import { BoxIcon, PackageIcon, PackageOpenIcon } from "lucide-react";
 import useLocalStorage from "~/app/utils/useLocalStorage";
@@ -32,6 +32,9 @@ export default function LootBoxInventory({
     "Mega Crystal",
     "Star Drop",
     "Treasure Horde",
+    "Abyss Chest",
+    "Christmas Case",
+    "Jungle Cache",
   ];
 
   const lootBoxCounts = lootBoxTypes.map((type) => ({
@@ -100,10 +103,7 @@ export default function LootBoxInventory({
         </Flex>
 
         {/* Filter Section */}
-        <Flex
-          justify="center"
-          className="w-full flex-wrap gap-2 overflow-x-auto rounded-lg bg-gray-900 p-2 text-[0.6rem] font-semibold sm:text-sm"
-        >
+        <div className="flex w-full flex-wrap justify-center gap-2 overflow-x-auto rounded-lg bg-gray-900 p-2 text-[0.6rem] font-semibold sm:flex-nowrap sm:justify-start sm:text-sm">
           {lootBoxCounts.map(({ type, count }) => (
             <button
               key={type}
@@ -120,7 +120,7 @@ export default function LootBoxInventory({
               {type} ({count})
             </button>
           ))}
-        </Flex>
+        </div>
       </Flex>
 
       {/* Lootbox Inventory Grid */}
@@ -141,7 +141,7 @@ export default function LootBoxInventory({
           .map((box) => (
             <Flex
               key={box.id}
-              className={`relative flex-col rounded-xl p-2 shadow-[0_5px_15px_rgba(0,0,0,0.5)] transition-transform duration-300 hover:rotate-1 hover:scale-[1.02] sm:p-3 ${box.background} border-2 border-transparent bg-gradient-to-br`}
+              className={`relative flex-col rounded-xl p-2 shadow-[0_5px_15px_rgba(0,0,0,0.5)] transition-transform duration-300 hover:rotate-1 hover:scale-[1.02] ${box.background} border-2 border-transparent bg-gradient-to-br`}
             >
               {/* Glowing Image Container */}
               <Flex

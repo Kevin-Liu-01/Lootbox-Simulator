@@ -66,7 +66,7 @@ export default function CollectedItems({
           className="gap-3 text-lg font-semibold text-white sm:text-2xl"
         >
           <BoxesIcon size={24} />
-          Collected Items ({filteredItems.length})
+          Collected Items ({collectedItems.length})
         </Flex>
         {/* Rarity Filter */}
         <Flex className="text-sm sm:ml-auto sm:text-base">
@@ -80,7 +80,7 @@ export default function CollectedItems({
               onChange={(e) => setSelectedRarity(e.target.value)}
               className="w-full rounded-lg border border-gray-600 bg-gray-700 p-2 text-gray-300 shadow focus:outline-none focus:ring-2 focus:ring-blue-500 sm:w-auto"
             >
-              <option value="all">All ({filteredItems.length})</option>
+              <option value="all">All ({collectedItems.length})</option>
               {rarityTypes.map((rarity) => (
                 <option key={rarity} value={rarity}>
                   {rarity.charAt(0).toUpperCase() + rarity.slice(1)} (
@@ -195,7 +195,8 @@ export default function CollectedItems({
           height="h-28"
         />
       </div>
-      {/* Modal */}
+
+      {/* Modal for selected items */}
       {isModalOpen && selectedItem && (
         <Flex
           justify="center"

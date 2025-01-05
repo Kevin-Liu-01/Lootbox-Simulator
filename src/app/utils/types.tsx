@@ -15,7 +15,12 @@ export type Item = {
   description?: string; // Brief description of the item
 };
 
-export type LootBoxType = "crate" | "starrdrop" | "skin" | "summon";
+export type LootBoxType =
+  | "crate"
+  | "starrdrop"
+  | "skin"
+  | "summon"
+  | "runereveal";
 
 export type LootBox = {
   id: string; // Unique identifier for the loot box

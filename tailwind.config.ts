@@ -46,6 +46,10 @@ export default {
             transform: "translate3d(4px, 0, 0)",
           },
         },
+        spinReverse: {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(-360deg)" },
+        },
       },
       animation: {
         lootboxGrow: "lootboxGrow 1s ease-in-out infinite",
@@ -55,6 +59,9 @@ export default {
         wiggle: "wiggle 200ms ease-in-out",
         wiggleInfinite: "wiggle 200ms cubic-bezier(.36,.07,.19,.97) infinite",
         shake: "shake 0.82s cubic-bezier(.36,.07,.19,.97) both",
+        spinSlow: "spin 9s linear infinite",
+        spinSlower: "spin 16s linear infinite",
+        spinSlowReverse: "spinReverse 9s linear infinite",
       },
     },
   },

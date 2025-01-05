@@ -5,7 +5,7 @@ export const FlashingLights = () => (
   <img
     src="/images/backgrounds/flashinglights.png"
     alt="Flashing Lights"
-    className="animate-fadeIn absolute -z-20 h-[100%] w-full rounded-full opacity-80 transition-opacity duration-[25]"
+    className="absolute -z-20 h-[100%] w-full animate-fadeIn rounded-full opacity-80 transition-opacity duration-[25]"
   />
 );
 
@@ -86,3 +86,51 @@ export const Portal = ({ isOpening }: { isOpening: boolean }) => (
     />
   </>
 );
+
+export const RuneCircle = ({
+  isOpening,
+  items,
+}: {
+  isOpening: boolean;
+  items: number;
+}) => {
+  const Rune = ({ index, translate }: { index: number; translate: string }) => (
+    <div
+      key={`rune-${index}-${translate}`}
+      className={`absolute h-12 w-12 transition-all ${isOpening ? "animate-spin" : ""}`}
+      style={{
+        transform: `rotate(${index * 45}deg) ${translate} rotate(-${index * 45}deg)`,
+      }}
+    >
+      <img
+        src={`/images/backgrounds/opening/rune-${index + 1}.webp`} // Replace with actual rune images
+        alt={`Rune ${index + 1}`}
+        className={`h-12 w-12 animate-wiggleInfinite ${isOpening || items <= 0 ? "inline" : "hidden"}`}
+      />
+    </div>
+  );
+
+  return (
+    <>
+      <div className="animate-spinSlower absolute z-40 flex h-full w-full items-center justify-center duration-300">
+        {[...Array(8)].map((_, i) => (
+          <Rune index={i} translate="translate(13rem)" />
+        ))}
+      </div>
+      <div className="animate-spinSlowReverse absolute z-40 flex h-full w-full items-center justify-center duration-300">
+        {/*Slower inner circle of runes */}
+        {[...Array(8)].map((_, i) => (
+          <Rune index={i + 8} translate="translate(10rem)" />
+        ))}
+      </div>
+    </>
+  );
+};
+
+export const GlowingAura = () => {
+  return (
+    <div
+      className={`absolute z-10 h-96 w-96 animate-pulse rounded-full bg-gradient-to-r from-blue-500 to-purple-500 opacity-90 blur-2xl`}
+    ></div>
+  );
+};

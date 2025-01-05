@@ -15,7 +15,7 @@ const AddLootBoxButton = ({
     : null;
 
   const SkeletonCard = () => (
-    <Flex className="z-5 h-full w-full select-none flex-col rounded-lg border border-transparent bg-gradient-to-br from-gray-700 to-gray-800 p-2 text-transparent opacity-40 sm:p-3">
+    <Flex className="z-5 h-full w-full select-none flex-col rounded-lg border border-transparent bg-gradient-to-br from-gray-700 to-gray-800 p-2 text-transparent opacity-40">
       {/* Glowing Image Placeholder */}
       <Box className="mb-2 w-full animate-pulse rounded-md bg-gray-600 p-2">
         <Box className="h-[4.5rem]"></Box>
