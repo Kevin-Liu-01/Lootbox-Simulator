@@ -26,10 +26,10 @@ export default function InventoryFiller({
           align="center"
           justify="center"
           key={`placeholder-${index}`}
-          className={`relative min-h-full ${height} overflow-hidden rounded-xl border border-white/[0.03] bg-gradient-to-br from-gray-900/80 via-gray-800/50 to-gray-900/80`}
+          className={`relative min-h-full ${height} overflow-hidden rounded-lg border border-gray-700/60 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 shadow-lg`}
         >
-          {/* Subtle border shimmer */}
-          <div className="absolute inset-0 rounded-xl border border-indigo-500/[0.06]" />
+          {/* Holographic Border Animation */}
+          <div className="absolute h-full w-full border-4 border-transparent bg-gradient-to-r from-gray-400 via-gray-500 to-gray-600 opacity-30" />
 
           {/* Pulsing Dots */}
           <Flex
@@ -37,17 +37,17 @@ export default function InventoryFiller({
             justify="center"
             className="absolute flex-col gap-2"
           >
-            <Flex className="space-x-1.5">
+            <Flex className="space-x-2">
               {[...Array(3)].map((_, dotIndex) => (
                 <div
                   key={`dot-${dotIndex}`}
-                  className="size-1 animate-pulse rounded-full bg-indigo-400/30 sm:size-1.5"
+                  className="size-1 animate-pulse rounded-full bg-indigo-500/70 sm:size-2"
                   style={{ animationDelay: `${dotIndex * 200}ms` }}
                 />
               ))}
             </Flex>
             {/* Empty Slot Text */}
-            <span className="select-none px-3 text-center text-[0.65rem] text-gray-500/40 sm:text-xs">
+            <span className="select-none px-3 text-center text-xs text-gray-400/40 sm:text-sm">
               Empty Slot
             </span>
           </Flex>

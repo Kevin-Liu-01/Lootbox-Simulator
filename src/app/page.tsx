@@ -8,7 +8,8 @@ import LootBoxOpening from "~/app/components/lootbox_opening/lootbox_opening";
 import LootBoxSide from "~/app/components/lootbox_side/lootbox_side";
 import { availableLootBoxes } from "~/app/utils/drops";
 import useLocalStorage from "~/app/utils/useLocalStorage";
-import { XIcon, DoorOpenIcon } from "lucide-react";
+import { XIcon, DoorOpenIcon, StarIcon } from "lucide-react";
+import Modal from "~/app/components/ui/Modal";
 
 const App = () => {
   const [selectedLootBox, setSelectedLootBox] = useState<LootBox | null>(null);
@@ -26,6 +27,11 @@ const App = () => {
   const [starrDropStage, setStarrDropStage] = useState<number>(0);
   const [isLeftSideOnLeft, setIsLeftSideOnLeft] = useState(true);
   const [displayOpening, setDisplayOpening] = useState(false);
+  const [isFullscreenOpening, setIsFullscreenOpening] = useState(false);
+  const [useFullscreenForOpening, setUseFullscreenForOpening] =
+    useLocalStorage<boolean>("useFullscreenForOpening", false);
+  const [itemDetailOpen, setItemDetailOpen] = useState(false);
+  const [detailItem, setDetailItem] = useState<Item | null>(null);
 
   const addLootBoxToInventory = (box: LootBox, count: number) => {
     setLootBoxInventory([
@@ -99,6 +105,24 @@ const App = () => {
     if (selectedLootBox) openLootBox(selectedLootBox);
   };
 
+  const handleItemClick = (item: Item) => {
+    setDetailItem(item);
+    setItemDetailOpen(true);
+  };
+
+  const rarityStars = (rarity: string) =>
+    rarity === "legendary"
+      ? 5
+      : rarity === "mythical"
+        ? 4
+        : rarity === "epic"
+          ? 3
+          : rarity === "super rare"
+            ? 2
+            : rarity === "rare"
+              ? 1
+              : 0;
+
   return (
     <Flex
       className={`min-h-screen flex-col bg-[#0f0d1a] font-sans text-white ${isLeftSideOnLeft ? "sm:flex-row" : "sm:flex-row-reverse"}`}
@@ -114,14 +138,18 @@ const App = () => {
         setLootBoxInventory={setLootBoxInventory}
         isLeftSideOnLeft={isLeftSideOnLeft}
         setIsLeftSideOnLeft={setIsLeftSideOnLeft}
+        isFullscreenOpening={isFullscreenOpening}
+        setIsFullscreenOpening={setIsFullscreenOpening}
+        useFullscreenForOpening={useFullscreenForOpening}
+        setUseFullscreenForOpening={setUseFullscreenForOpening}
       />
 
-      {/* Left Side: Opening Area (Mobile Overlay) */}
-      {displayOpening && (
+      {/* Left Side: Opening Area (Mobile Overlay) - only when fullscreen preferred */}
+      {displayOpening && useFullscreenForOpening && (
         <Flex
           align="center"
           justify="center"
-          className="absolute z-50 h-screen w-full flex-col items-center justify-center bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-950 p-4 sm:hidden sm:h-0 sm:w-0 sm:p-0"
+          className="fixed inset-0 z-50 flex overflow-hidden flex-col items-center justify-center bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-950 p-4 sm:hidden"
         >
           <LootBoxOpening
             selectedLootBox={selectedLootBox}
@@ -129,6 +157,7 @@ const App = () => {
             isOpening={isOpening}
             starrDropStage={starrDropStage}
             handleStarrDropClick={handleStarrDropClick}
+            onItemClick={handleItemClick}
           />
 
           {/* Return button */}
@@ -144,20 +173,111 @@ const App = () => {
         </Flex>
       )}
 
-      {/* Left Side: Opening Area (Desktop) */}
-      <Flex
-        align="center"
-        justify="center"
-        className="relative hidden h-0 flex-col items-center justify-center bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-950 sm:inline sm:h-screen sm:w-1/2 sm:p-4"
-      >
+      {/* Left Side: Opening Area (Desktop fullscreen overlay) */}
+      {isFullscreenOpening && useFullscreenForOpening && (
+        <Flex
+          align="center"
+          justify="center"
+          className="fixed inset-0 z-50 hidden overflow-hidden flex-col items-center justify-center bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-950 p-4 sm:flex"
+        >
+          <LootBoxOpening
+            selectedLootBox={selectedLootBox}
+            openedItems={openedItems}
+            isOpening={isOpening}
+            starrDropStage={starrDropStage}
+            handleStarrDropClick={handleStarrDropClick}
+            onItemClick={handleItemClick}
+          />
+          {!isOpening && (
+            <button
+              className="absolute bottom-8 z-50 mx-auto flex items-center gap-2 rounded-xl border border-white/10 bg-gray-800/70 px-4 py-2.5 font-semibold text-gray-200 shadow-lg backdrop-blur-sm transition-all hover:border-white/20 hover:bg-gray-700/80 hover:text-white"
+              onClick={() => setIsFullscreenOpening(false)}
+            >
+              <DoorOpenIcon size={20} />
+              Exit Fullscreen
+            </button>
+          )}
+        </Flex>
+      )}
+
+      {/* Left Side: Opening Area (Shelf - when not fullscreen) */}
+      {(!isFullscreenOpening || !useFullscreenForOpening) && (
+        <Flex
+          align="center"
+          justify="center"
+          className={`relative flex-col items-center justify-center bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-950 p-4 ${
+            useFullscreenForOpening
+              ? "hidden sm:inline sm:h-screen sm:w-1/2"
+              : "min-h-[60vh] sm:h-screen sm:w-1/2"
+          }`}
+        >
         <LootBoxOpening
           selectedLootBox={selectedLootBox}
           openedItems={openedItems}
           isOpening={isOpening}
           starrDropStage={starrDropStage}
           handleStarrDropClick={handleStarrDropClick}
+          onItemClick={handleItemClick}
         />
-      </Flex>
+        </Flex>
+      )}
+
+      {/* Item Detail Modal */}
+      <Modal
+        open={itemDetailOpen}
+        onClose={() => setItemDetailOpen(false)}
+        size="sm"
+        zIndex={60}
+        panelClassName={
+          detailItem ? `${rarityColors[detailItem.rarity]} border-white/20` : ""
+        }
+        closeButtonClassName="text-gray-200 hover:text-white"
+      >
+        {detailItem && (
+          <>
+            <Flex align="center" justify="center" className="mb-4 w-full">
+              <div className="w-full rounded-lg bg-black/20 p-2 shadow-inner">
+                <img
+                  src={detailItem.image}
+                  alt={detailItem.name}
+                  className="h-full max-h-56 w-full object-contain transition-all hover:scale-[1.02]"
+                />
+              </div>
+            </Flex>
+            <Text className="mb-2 text-center text-2xl font-bold text-white">
+              {detailItem.name}
+            </Text>
+            <Flex justify="center" className="mb-3">
+              <Text className="w-min text-nowrap rounded-full border border-white bg-gradient-to-br from-gray-300/20 to-gray-400/20 px-2 text-center text-sm font-semibold uppercase">
+                {detailItem.rarity}
+              </Text>
+            </Flex>
+            <div className="mb-3 flex justify-center space-x-1.5">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <StarIcon
+                  key={i}
+                  className={`h-5 w-5 ${
+                    i < rarityStars(detailItem.rarity)
+                      ? "text-yellow-400 drop-shadow-[0_0_5px_rgba(255,255,0,0.8)]"
+                      : "text-gray-700"
+                  }`}
+                />
+              ))}
+            </div>
+            {detailItem.description && (
+              <Text className="mb-4 text-center text-sm text-gray-100">
+                {detailItem.description}
+              </Text>
+            )}
+            <button
+              onClick={() => setItemDetailOpen(false)}
+              className="flex w-full items-center justify-center rounded-lg bg-gray-800/60 p-2.5 text-sm font-bold text-white transition hover:bg-gray-700/80"
+            >
+              Close
+            </button>
+          </>
+        )}
+      </Modal>
 
       {/* Confirm Open Modal */}
       {isModalOpen && selectedLootBox && (

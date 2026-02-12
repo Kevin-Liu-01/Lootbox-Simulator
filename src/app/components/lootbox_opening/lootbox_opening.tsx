@@ -23,6 +23,7 @@ interface LootBoxAnimationProps {
   isOpening?: boolean;
   starrDropStage?: number;
   handleStarrDropClick?: () => void;
+  onItemClick?: (item: Item) => void;
 }
 
 const LootBoxOpening: React.FC<LootBoxAnimationProps> = ({
@@ -31,6 +32,7 @@ const LootBoxOpening: React.FC<LootBoxAnimationProps> = ({
   isOpening = false,
   starrDropStage = 1,
   handleStarrDropClick,
+  onItemClick,
 }) => {
   const [shakeEffect, setShakeEffect] = useState(true);
 
@@ -71,7 +73,7 @@ const LootBoxOpening: React.FC<LootBoxAnimationProps> = ({
     <Flex
       align="center"
       justify="center"
-      className="absolute z-30 my-3 h-full w-full max-w-4xl overflow-y-auto py-8"
+      className="absolute z-30 my-3 h-full w-full max-w-4xl overflow-y-auto scrollbar-hide py-8"
     >
       <Flex
         align="center"
@@ -82,7 +84,11 @@ const LootBoxOpening: React.FC<LootBoxAnimationProps> = ({
         <SpinningLightCircle />
 
         {openedItems.map((item, index) => (
-          <ItemCard key={"itemcard" + item.name + index} item={item} />
+          <ItemCard
+            key={"itemcard" + item.name + index}
+            item={item}
+            onClick={() => onItemClick?.(item)}
+          />
         ))}
       </Flex>
     </Flex>
@@ -173,9 +179,8 @@ const LootBoxOpening: React.FC<LootBoxAnimationProps> = ({
             <img
               src={selectedLootBox.image}
               alt={selectedLootBox.name}
-              className={`z-10 h-72 w-72 transition-transform duration-[1000] ease-in-out ${
-                isOpening ? "animate-wiggleInfinite" : "hover:scale-105"
-              }`}
+              className={`z-10 h-72 w-72 transition-transform duration-[1000] ease-in-out ${isOpening ? "animate-wiggleInfinite" : "hover:scale-105"
+                }`}
             />
             {openedItems.length > 0 && renderItems()}
           </Flex>
@@ -241,13 +246,12 @@ const LootBoxOpening: React.FC<LootBoxAnimationProps> = ({
                   {[...Array(5)].map((_, i) => (
                     <span
                       key={"star" + i}
-                      className={`mx-1 inline-block h-4 w-4 rounded-full transition-all ${
-                        i < starrDropStage - 1
+                      className={`mx-1 inline-block h-4 w-4 rounded-full transition-all ${i < starrDropStage - 1
                           ? "bg-yellow-400 shadow-md shadow-yellow-400/50"
                           : i === starrDropStage - 1
                             ? "border-2 border-yellow-400 bg-gray-600"
                             : "bg-gray-600"
-                      }`}
+                        }`}
                     />
                   ))}
                 </p>
@@ -273,9 +277,8 @@ const LootBoxOpening: React.FC<LootBoxAnimationProps> = ({
               <img
                 src={selectedLootBox.image}
                 alt={selectedLootBox.name}
-                className={`z-30 h-72 w-72 transition-transform duration-[1000] ease-in-out ${
-                  isOpening ? "animate-wiggleInfinite" : "hover:scale-105"
-                }`}
+                className={`z-30 h-72 w-72 transition-transform duration-[1000] ease-in-out ${isOpening ? "animate-wiggleInfinite" : "hover:scale-105"
+                  }`}
               />
             </Flex>
             <BackgroundLightning isOpening={isOpening} />
@@ -301,7 +304,7 @@ const LootBoxOpening: React.FC<LootBoxAnimationProps> = ({
       {/* Outer frame with glowing effect */}
       <div className="absolute inset-0 z-20 animate-pulse rounded-2xl border border-indigo-400/20"></div>
       {/* Content area */}
-      <div className="relative z-30 h-full w-full overflow-y-auto">
+      <div className="relative z-30 h-full w-full overflow-y-auto scrollbar-hide">
         {handleDisplay()}
       </div>
     </div>

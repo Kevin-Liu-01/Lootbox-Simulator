@@ -4,14 +4,28 @@ import { rarityColors, type Rarity } from "~/app/utils/types";
 
 export default function ItemCard({
   item,
+  onClick,
 }: {
   item: { name: string; rarity: Rarity; image: string };
+  onClick?: () => void;
 }) {
   return (
     <Flex
-      className={`relative flex animate-fadeIn flex-col items-center rounded-2xl border border-white/10 p-3 shadow-2xl backdrop-blur-md transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_5px_rgba(255,255,255,0.3)] ${
-        rarityColors[item.rarity]
-      } bg-opacity-50`}
+      onClick={onClick}
+      role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={
+        onClick
+          ? (e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onClick();
+              }
+            }
+          : undefined
+      }
+      className={`relative flex animate-fadeIn flex-col items-center rounded-2xl border border-white/10 p-3 shadow-2xl backdrop-blur-md transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_5px_rgba(255,255,255,0.3)] ${onClick ? "cursor-pointer" : ""} ${rarityColors[item.rarity]
+        } bg-opacity-50`}
     >
       <div className="absolute inset-0 -z-10 animate-pulse rounded-2xl bg-gradient-to-t from-gray-900/10 to-black/10" />
       <Flex justify="center" className="relative sm:w-full">
@@ -22,9 +36,8 @@ export default function ItemCard({
         />
         {/* Rarity Badge */}
         <div
-          className={`absolute bottom-[-0.65rem] truncate rounded-full border border-white/30 px-2 py-0.5 text-[0.5rem] font-bold tracking-wider text-white shadow-md sm:text-xs ${
-            rarityColors[item.rarity]
-          }`}
+          className={`absolute bottom-[-0.65rem] truncate rounded-full border border-white/30 px-2 py-0.5 text-[0.5rem] font-bold tracking-wider text-white shadow-md sm:text-xs ${rarityColors[item.rarity]
+            }`}
         >
           {item.rarity.toUpperCase()}
         </div>
@@ -36,22 +49,21 @@ export default function ItemCard({
         {[...Array(5)].map((_, i) => (
           <StarIcon
             key={i}
-            className={`h-3 w-3 transition-transform hover:rotate-6 sm:h-5 sm:w-5 ${
-              i <
-              (item.rarity === "legendary"
-                ? 5
-                : item.rarity === "mythical"
-                  ? 4
-                  : item.rarity === "epic"
-                    ? 3
-                    : item.rarity === "super rare"
-                      ? 2
-                      : item.rarity === "rare"
-                        ? 1
-                        : 0)
+            className={`h-3 w-3 transition-transform hover:rotate-6 sm:h-5 sm:w-5 ${i <
+                (item.rarity === "legendary"
+                  ? 5
+                  : item.rarity === "mythical"
+                    ? 4
+                    : item.rarity === "epic"
+                      ? 3
+                      : item.rarity === "super rare"
+                        ? 2
+                        : item.rarity === "rare"
+                          ? 1
+                          : 0)
                 ? "text-yellow-400 drop-shadow-[0_0_5px_rgba(255,255,0,0.8)]"
                 : "text-gray-700"
-            }`}
+              }`}
           />
         ))}
       </div>

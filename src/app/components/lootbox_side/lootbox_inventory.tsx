@@ -1,10 +1,13 @@
-import { Box, Flex } from "@radix-ui/themes";
-import React, { useState } from "react";
-import { BoxIcon, PackageIcon, PackageOpenIcon } from "lucide-react";
+import { Flex } from "@radix-ui/themes";
+import React, { useEffect, useRef, useState } from "react";
+import { BoxIcon, PackageOpenIcon } from "lucide-react";
 import useLocalStorage from "~/app/utils/useLocalStorage";
 import InventoryFiller from "~/app/utils/inventory_filler";
 import AddLootBoxButton from "./addLootBoxButton";
 import { type LootBox } from "~/app/utils/types";
+import TrashButton from "~/app/components/ui/TrashButton";
+import DeleteConfirmModal from "~/app/components/ui/DeleteConfirmModal";
+import Dropdown from "~/app/components/ui/Dropdown";
 
 export default function LootBoxInventory({
   availableLootBoxes,
@@ -24,6 +27,11 @@ export default function LootBoxInventory({
     "grid-cols-3",
   );
   const [filter, setFilter] = useState<string | null>(null);
+  const [lootBoxToDelete, setLootBoxToDelete] = useState<LootBox | null>(null);
+  const filterScrollRef = useRef<HTMLDivElement>(null);
+  const isDraggingRef = useRef(false);
+  const dragStartRef = useRef<{ x: number; scrollLeft: number } | null>(null);
+  const pressedFilterRef = useRef<string | null>(null);
 
   const lootBoxTypes = [
     "Quantum Cache",
@@ -50,16 +58,64 @@ export default function LootBoxInventory({
     confirmOpenLootBox(lootBox);
   };
 
-  const handleDeleteLootBox = (lootBoxId: string) => {
-    setLootBoxInventory(lootBoxInventory.filter((box) => box.id !== lootBoxId));
+  const handleRequestDeleteLootBox = (lootBox: LootBox) => {
+    setLootBoxToDelete(lootBox);
   };
 
-  const handleColumnToggle = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setColumns(e.target.value);
+  const confirmDeleteLootBox = () => {
+    if (lootBoxToDelete?.id) {
+      setLootBoxInventory(
+        lootBoxInventory.filter((box) => box.id !== lootBoxToDelete.id),
+      );
+      setLootBoxToDelete(null);
+    }
   };
+
+
+  const handleFilterPointerDown = (e: React.PointerEvent) => {
+    if (filterScrollRef.current) {
+      isDraggingRef.current = false;
+      const button = (e.target as HTMLElement).closest("button[data-filter]");
+      pressedFilterRef.current = button?.getAttribute("data-filter") ?? null;
+      dragStartRef.current = {
+        x: e.clientX,
+        scrollLeft: filterScrollRef.current.scrollLeft,
+      };
+      filterScrollRef.current.setPointerCapture(e.pointerId);
+    }
+  };
+
+  const handleFilterPointerMove = (e: React.PointerEvent) => {
+    if (dragStartRef.current && filterScrollRef.current) {
+      const dx = dragStartRef.current.x - e.clientX;
+      if (Math.abs(dx) > 3) isDraggingRef.current = true;
+      filterScrollRef.current.scrollLeft = dragStartRef.current.scrollLeft + dx;
+    }
+  };
+
+  const handleFilterPointerUp = (e: React.PointerEvent) => {
+    if (filterScrollRef.current?.hasPointerCapture(e.pointerId)) {
+      filterScrollRef.current.releasePointerCapture(e.pointerId);
+    }
+    if (!isDraggingRef.current && pressedFilterRef.current) {
+      setFilter(filter === pressedFilterRef.current ? null : pressedFilterRef.current);
+    }
+    dragStartRef.current = null;
+    pressedFilterRef.current = null;
+  };
+
+  useEffect(() => {
+    const onPointerUp = () => {
+      dragStartRef.current = null;
+      pressedFilterRef.current = null;
+    };
+    window.addEventListener("pointerup", onPointerUp);
+    return () => window.removeEventListener("pointerup", onPointerUp);
+  }, []);
+
 
   return (
-    <Flex className="h-full w-full flex-col bg-gray-800/60 p-3 text-gray-100">
+    <Flex className="h-full w-full flex-col bg-gray-800 p-3 text-gray-100">
       <Flex className="mb-3 flex-col gap-3">
         <Flex
           align="center"
@@ -76,52 +132,55 @@ export default function LootBoxInventory({
             </span>
           </Flex>
           {/* Column toggle */}
-          <div className="mt-2 flex items-center sm:ml-auto sm:mt-0">
-            <label
-              htmlFor="column-toggle"
-              className="mr-2 text-sm font-medium text-gray-400"
-            >
-              Columns:
-            </label>
-            {/* Column Toggle Select */}
-            <select
-              id="column-toggle"
-              value={columns}
-              onChange={handleColumnToggle}
-              className="hidden rounded-lg border border-indigo-500/20 bg-gray-900/80 p-2 text-sm text-gray-300 shadow-sm focus:border-indigo-500/40 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 sm:inline"
-            >
-              <option value={"grid-cols-3"}>3 Columns</option>
-              <option value={"grid-cols-4"}>4 Columns</option>
-              <option value={"grid-cols-5"}>5 Columns</option>
-            </select>
-            {/* Column toggle for mobile */}
-            <select
-              id="column-toggle-mobile"
-              value={columns}
-              onChange={handleColumnToggle}
-              className="inline rounded-lg border border-indigo-500/20 bg-gray-900/80 p-2 text-sm text-gray-300 shadow-sm focus:border-indigo-500/40 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 sm:hidden"
-            >
-              <option value={"grid-cols-1"}>1 Column</option>
-              <option value={"grid-cols-2"}>2 Columns</option>
-              <option value={"grid-cols-3"}>3 Columns</option>
-            </select>
+          <div className="mt-2 flex items-center gap-2 sm:ml-auto sm:mt-0">
+            <span className="text-sm font-medium text-gray-400">Columns:</span>
+            <div className="hidden sm:block">
+              <Dropdown
+                value={columns}
+                onChange={setColumns}
+                options={[
+                  { value: "grid-cols-3", label: "3 Columns" },
+                  { value: "grid-cols-4", label: "4 Columns" },
+                  { value: "grid-cols-5", label: "5 Columns" },
+                ]}
+                width="min-w-28"
+              />
+            </div>
+            <div className="sm:hidden">
+              <Dropdown
+                value={columns}
+                onChange={setColumns}
+                options={[
+                  { value: "grid-cols-1", label: "1 Column" },
+                  { value: "grid-cols-2", label: "2 Columns" },
+                  { value: "grid-cols-3", label: "3 Columns" },
+                ]}
+                width="min-w-28"
+              />
+            </div>
           </div>
         </Flex>
 
-        {/* Filter Section */}
-        <div className="flex w-full flex-wrap justify-center gap-1.5 overflow-x-auto rounded-xl bg-gray-900/60 p-2 text-[0.6rem] font-semibold sm:flex-nowrap sm:justify-start sm:gap-2 sm:text-sm">
+        {/* Filter Section - scroll/drag to navigate, scrollbar hidden */}
+        <div
+          ref={filterScrollRef}
+          onPointerDown={handleFilterPointerDown}
+          onPointerMove={handleFilterPointerMove}
+          onPointerUp={handleFilterPointerUp}
+          onPointerLeave={handleFilterPointerUp}
+          className="flex w-full cursor-grab touch-pan-x flex-wrap justify-center gap-1.5 overflow-x-auto overflow-y-hidden rounded-xl bg-gray-900/60 p-2 text-[0.6rem] font-semibold scrollbar-hide active:cursor-grabbing sm:flex-nowrap sm:justify-start sm:gap-2 sm:text-sm"
+        >
           {lootBoxCounts.map(({ type, count }) => (
             <button
               key={type}
-              className={`text-nowrap rounded-lg px-2 py-1.5 transition-all sm:px-3 sm:py-2 ${
-                filter === type
-                  ? `${
-                      availableLootBoxes.find((box) => box.name === type)
-                        ?.background
-                    } border border-white/10 text-white shadow-md`
-                  : "border border-transparent bg-gray-800/80 text-gray-400 hover:bg-gray-700/80 hover:text-gray-200"
-              }`}
-              onClick={() => setFilter(filter === type ? null : type)}
+              type="button"
+              data-filter={type}
+              className={`shrink-0 text-nowrap rounded-lg px-2 py-1.5 transition-all sm:px-3 sm:py-2 ${filter === type
+                ? `${availableLootBoxes.find((box) => box.name === type)
+                  ?.background
+                } border border-white/10 text-white shadow-md`
+                : "border border-transparent bg-gray-800/80 text-gray-400 hover:bg-gray-700/80 hover:text-gray-200"
+                }`}
             >
               {type} ({count})
             </button>
@@ -187,13 +246,13 @@ export default function LootBoxInventory({
                   <PackageOpenIcon size={16} className="sm:mr-1" />
                   <span className="hidden sm:inline">Open</span>
                 </button>
-                <button
-                  onClick={() => handleDeleteLootBox(box.id)}
-                  className="flex w-full items-center justify-center rounded-lg bg-gradient-to-r from-red-600 to-red-700 py-2 text-xs font-semibold text-white shadow-lg shadow-red-900/30 transition-all hover:scale-[1.02] hover:from-red-500 hover:to-red-600 sm:px-3"
-                >
-                  <PackageIcon size={16} className="sm:mr-1" />
-                  <span className="hidden sm:inline">Delete</span>
-                </button>
+                <TrashButton
+                  variant="compact"
+                  label="Delete"
+                  dangerLevel="medium"
+                  onClick={() => handleRequestDeleteLootBox(box)}
+                  className="flex w-full items-center text-xs justify-center"
+                />
               </Flex>
             </Flex>
           ))}
@@ -207,6 +266,24 @@ export default function LootBoxInventory({
           height={"h-64"}
         />
       </div>
+
+      <DeleteConfirmModal
+        open={!!lootBoxToDelete}
+        onClose={() => setLootBoxToDelete(null)}
+        title={lootBoxToDelete ? `Delete ${lootBoxToDelete.name}?` : "Delete?"}
+        description={
+          lootBoxToDelete
+            ? `This will remove this ${lootBoxToDelete.name} from your inventory.`
+            : undefined
+        }
+        confirmLabel="Delete"
+        onConfirm={confirmDeleteLootBox}
+        panelClassName={
+          lootBoxToDelete
+            ? `${lootBoxToDelete.background} border-white/10`
+            : undefined
+        }
+      />
     </Flex>
   );
 }
