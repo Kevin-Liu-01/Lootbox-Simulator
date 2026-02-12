@@ -8,9 +8,9 @@ export default function InventoryFiller({
   adjustVal,
   height,
 }: {
-  entries: any;
+  entries: unknown[];
   minEntries: number;
-  columns: any;
+  columns: string;
   adjustVal: number;
   height?: string;
 }) {
@@ -21,21 +21,15 @@ export default function InventoryFiller({
 
   return (
     <>
-      {/* <div className="absolute">
-        {totalEntries + "," + numColumns + "," + placeholders}
-      </div> */}
       {Array.from({ length: placeholders }).map((_, index) => (
         <Flex
           align="center"
           justify="center"
           key={`placeholder-${index}`}
-          className={`relative min-h-full ${height} overflow-hidden rounded-lg bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 shadow-lg`}
+          className={`relative min-h-full ${height} overflow-hidden rounded-xl border border-white/[0.03] bg-gradient-to-br from-gray-900/80 via-gray-800/50 to-gray-900/80`}
         >
-          {/* Holographic Border Animation */}
-          <div className="absolute h-full w-full border-4 border-transparent bg-gradient-to-r from-gray-400 via-gray-500 to-gray-600 opacity-30" />
-
-          {/* High-Tech Holographic Effect */}
-          {/* <div className="absolute -z-10 h-full w-full animate-pulse bg-gradient-to-r from-purple-500 via-blue-500 to-cyan-500 opacity-20 blur-md"></div> */}
+          {/* Subtle border shimmer */}
+          <div className="absolute inset-0 rounded-xl border border-indigo-500/[0.06]" />
 
           {/* Pulsing Dots */}
           <Flex
@@ -43,17 +37,17 @@ export default function InventoryFiller({
             justify="center"
             className="absolute flex-col gap-2"
           >
-            <Flex className="space-x-2">
+            <Flex className="space-x-1.5">
               {[...Array(3)].map((_, dotIndex) => (
                 <div
                   key={`dot-${dotIndex}`}
-                  className={`size-1 animate-pulse rounded-full bg-indigo-500/70 sm:size-2`}
+                  className="size-1 animate-pulse rounded-full bg-indigo-400/30 sm:size-1.5"
                   style={{ animationDelay: `${dotIndex * 200}ms` }}
                 />
               ))}
             </Flex>
             {/* Empty Slot Text */}
-            <span className="select-none px-3 text-center text-xs text-gray-400/40 sm:text-sm">
+            <span className="select-none px-3 text-center text-[0.65rem] text-gray-500/40 sm:text-xs">
               Empty Slot
             </span>
           </Flex>

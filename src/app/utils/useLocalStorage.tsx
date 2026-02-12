@@ -1,21 +1,27 @@
 import { useState, useEffect } from "react";
-export default function useLocalStorage(key: string, defaultValue: any) {
-  const [value, setValue] = useState(() => {
-    let currentValue;
 
+export default function useLocalStorage<T>(
+  key: string,
+  defaultValue: T,
+): [T, React.Dispatch<React.SetStateAction<T>>] {
+  const [value, setValue] = useState<T>(() => {
     try {
-      currentValue = JSON.parse(
-        localStorage.getItem(key) || String(defaultValue),
-      );
-    } catch (error) {
-      currentValue = defaultValue;
+      const stored = localStorage.getItem(key);
+      if (stored !== null) {
+        return JSON.parse(stored) as T;
+      }
+      return defaultValue;
+    } catch {
+      return defaultValue;
     }
-
-    return currentValue;
   });
 
   useEffect(() => {
-    localStorage.setItem(key, JSON.stringify(value));
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch {
+      // localStorage quota exceeded or unavailable
+    }
   }, [value, key]);
 
   return [value, setValue];
